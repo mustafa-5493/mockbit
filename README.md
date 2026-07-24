@@ -21,7 +21,7 @@
 
 ## What is Mockbit?
 
-**Mockbit** is an open-source, ultra-fast mock API service designed for frontend developers, mobile engineers, QA teams, and technical interview demonstrations. 
+**Mockbit** is an open-source, ultra-fast mock API service designed for frontend developers, mobile engineers, QA teams. 
 
 Instead of waiting for backend services to be built or configuring heavy mock servers, Mockbit allows you to generate hosted & local REST endpoints in **under 5 seconds** — with dynamic Faker.js field generation, stateful CRUD persistence, custom latency delays, and one-click OpenAPI/Postman exports.
 
