@@ -1,0 +1,16 @@
+{
+  "failure_id": "duplicate_webhook",
+  "category": "payments",
+  "cause": "Network retry without idempotency key headers",
+  "symptoms": [
+    "duplicate_charge_created",
+    "ledger_imbalance",
+    "double_invoice_receipt"
+  ],
+  "expected_agent_actions": [
+    "detect_duplicate_event_id",
+    "apply_idempotency_lock",
+    "reconcile_ledger_entry"
+  ],
+  "mitigation_rule": "Enforce X-Idempotency-Key header on all POST /charges mutations"
+}

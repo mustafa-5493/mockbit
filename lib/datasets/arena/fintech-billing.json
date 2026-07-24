@@ -1,0 +1,195 @@
+{
+  "id": "fintech-billing",
+  "name": "Fintech & Revenue Cloud",
+  "tagline": "Digital Money Movement & Multi-System Billing Engine",
+  "category": "Financial Infrastructure",
+  "description": "Simulates digital identity, Plaid bank linking, Stripe subscriptions, Chargebee invoicing, QuickBooks accounting, tax calculation, and fraud chargebacks.",
+  "systems": [
+    "Identity API",
+    "Plaid Banking",
+    "Stripe Checkout",
+    "Chargebee Billing",
+    "QuickBooks Accounting",
+    "Tax Engine",
+    "Fraud Radar",
+    "Audit Log"
+  ],
+  "entity_graph": [
+    "Organization",
+    "Users",
+    "Customers",
+    "Bank Accounts",
+    "Subscriptions",
+    "Invoices",
+    "Charges",
+    "Refunds",
+    "Disputes",
+    "Tax Records",
+    "Audit Events"
+  ],
+  "event_cascade": [
+    "Customer Created (Identity API)",
+    "Email & Identity Verified",
+    "Bank Account Linked & Micro-deposits Verified (Plaid)",
+    "Subscription Started ($49/mo Pro)",
+    "Invoice & Tax Calculated (Chargebee / Tax Engine)",
+    "Payment Charge Attempt 1 Failed (Card Locked)",
+    "Payment Charge Attempt 2 Failed ➔ Past Due Status",
+    "Customer Files Chargeback Dispute",
+    "Fraud Radar Investigation Initiated",
+    "Refund Dispatched & QuickBooks Ledger Updated",
+    "Case Closed & Audit Event Emitted"
+  ],
+  "workflows": [
+    {
+      "id": "wf_dispute_recovery",
+      "name": "Customer Dispute & Ledger Recovery Workflow",
+      "start_event": "stripe.refund.created",
+      "required_events": [
+        "accounting.ledger.updated",
+        "tax.refund.pending",
+        "audit.record.append"
+      ],
+      "success_event": "analytics.refund.logged",
+      "failure_event": "arena.invariant.failed"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "inv_refund_limit",
+      "description": "Refund amount cannot exceed original charge",
+      "check_field": "amount",
+      "operator": "less_than_or_equal",
+      "check_value": 500,
+      "on_fail_emit": "arena.invariant.failed"
+    },
+    {
+      "id": "inv_tax_balance",
+      "description": "Adjusted tax due cannot be negative",
+      "check_field": "adjusted_tax_due",
+      "operator": "greater_than",
+      "check_value": -1,
+      "on_fail_emit": "arena.invariant.failed"
+    }
+  ],
+  "event_rules": [
+    {
+      "trigger": "stripe.refund.created",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "ledger_entry",
+          "delta": {
+            "entry_type": "refund_credit",
+            "amount": -49,
+            "status": "posted"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "accounting.ledger.updated",
+          "delta": {
+            "ledger_synced": true
+          }
+        },
+        {
+          "type": "emit",
+          "event": "tax.refund.pending",
+          "delta": {
+            "tax_reversal": -4.41
+          }
+        },
+        {
+          "type": "emit",
+          "event": "audit.record.append",
+          "delta": {
+            "audit_log": "Customer refund processed & accounting ledger updated"
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "accounting.ledger.updated",
+      "condition": {
+        "field": "ledger_synced",
+        "operator": "equals",
+        "value": true
+      },
+      "actions": [
+        {
+          "type": "update",
+          "resource": "quickbooks_journal",
+          "delta": {
+            "sync_status": "COMPLETED",
+            "journal_id": "jno_8891"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "analytics.refund.logged",
+          "delta": {
+            "metrics_updated": true
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "tax.refund.pending",
+      "actions": [
+        {
+          "type": "update",
+          "resource": "tax_ledger",
+          "delta": {
+            "adjusted_tax_due": 0
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "Identity API",
+      "method": "POST",
+      "path": "/v1/customers",
+      "description": "Create customer identity record"
+    },
+    {
+      "system": "Plaid",
+      "method": "POST",
+      "path": "/v1/link/bank-account",
+      "description": "Link external bank account & verify micro-deposits"
+    },
+    {
+      "system": "Stripe",
+      "method": "POST",
+      "path": "/v1/subscriptions",
+      "description": "Create recurring billing subscription"
+    },
+    {
+      "system": "Stripe",
+      "method": "POST",
+      "path": "/v1/charges/refund",
+      "description": "Issue customer refund & reverse ledger"
+    },
+    {
+      "system": "Chargebee",
+      "method": "GET",
+      "path": "/v1/invoices/:id",
+      "description": "Retrieve itemized invoice with tax calculation"
+    },
+    {
+      "system": "QuickBooks",
+      "method": "POST",
+      "path": "/v1/ledger/entries",
+      "description": "Post double-entry accounting journal entry"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 98.4,
+    "workflow_completion": 94.2,
+    "recovery_intelligence": 89.6,
+    "state_efficiency": 91.8,
+    "safety_score": 99.1
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\n    \"fintech-billing\",\n    branch=\"agent-run-104\",\n    scenario=\"payment_failure_dispute\"\n)\n\nagent.configure(\n    api_base=world.base_url,\n    headers={\"X-Mockbit-Branch\": world.branch_id}\n)\n\nresult = arena.evaluate(agent)\nprint(f\"Mockbit Agent Index Score: {result.score} / 100\")"
+}

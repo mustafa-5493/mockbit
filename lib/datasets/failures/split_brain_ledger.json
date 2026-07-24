@@ -1,0 +1,15 @@
+{
+  "failure_id": "split_brain_ledger",
+  "category": "distributed_systems",
+  "cause": "Database network partition during multi-node transaction commit",
+  "symptoms": [
+    "node_a_balance != node_b_balance",
+    "stale_read_inconsistency"
+  ],
+  "expected_agent_actions": [
+    "quarantine_partitioned_node",
+    "replay_transaction_log",
+    "re-verify_consensus_state"
+  ],
+  "mitigation_rule": "Reject mutations when node quorum < 51%"
+}

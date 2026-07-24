@@ -1,0 +1,15 @@
+{
+  "failure_id": "stale_jwt_replay",
+  "category": "security",
+  "cause": "Revoked OAuth JWT token reused after logout event",
+  "symptoms": [
+    "unauthorized_api_access",
+    "session_hijack_attempt"
+  ],
+  "expected_agent_actions": [
+    "check_token_revocation_list",
+    "emit_security_alert",
+    "force_user_reauthentication"
+  ],
+  "mitigation_rule": "Check token_jti against Redis revocation cache on every request"
+}

@@ -1,0 +1,164 @@
+{
+  "id": "devops-incident",
+  "name": "DevOps & Engineering Cloud",
+  "tagline": "Autonomous Incident Response & CI/CD Deployment Pipeline",
+  "category": "Software Engineering",
+  "description": "Simulates GitHub PR merges, Kubernetes ReplicaSets, Datadog metric spikes, PagerDuty alerts, Slack war rooms, and automated rollback workflows.",
+  "systems": [
+    "GitHub",
+    "Jenkins / CI",
+    "Kubernetes",
+    "AWS EC2",
+    "Datadog Telemetry",
+    "PagerDuty",
+    "Slack War Room",
+    "Terraform Vault"
+  ],
+  "entity_graph": [
+    "Repositories",
+    "Pull Requests",
+    "CI Builds",
+    "Container Deployments",
+    "Kubernetes Pods",
+    "Alert Incidents",
+    "Slack Channels",
+    "Postmortems"
+  ],
+  "event_cascade": [
+    "Pull Request Merged to main (GitHub)",
+    "CI Container Build & Security Scanning (Jenkins)",
+    "Kubernetes ReplicaSet Updated & Deployed to Production",
+    "CPU & Latency Metric Spike Detected (Datadog)",
+    "HIGH P1 Incident Alert Dispatched (PagerDuty)",
+    "Automated Slack War Room Channel Created (#incident-4012)",
+    "Agent Evaluates Metrics & Triggers K8s Rollback",
+    "Pod Health Normalized & Datadog Metrics Recovered",
+    "PagerDuty Alert Resolved & Root Cause Postmortem Logged"
+  ],
+  "workflows": [
+    {
+      "id": "wf_incident_rollback",
+      "name": "Kubernetes Incident Rollback & Recovery Workflow",
+      "start_event": "github.pr.merged",
+      "required_events": [
+        "k8s.deployment.updated",
+        "datadog.metric.spiked"
+      ],
+      "success_event": "slack.channel.created",
+      "failure_event": "arena.invariant.failed"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "inv_cpu_limit",
+      "description": "Container CPU utilization must not exceed 100%",
+      "check_field": "cpu_user",
+      "operator": "less_than_or_equal",
+      "check_value": 100,
+      "on_fail_emit": "arena.invariant.failed"
+    }
+  ],
+  "event_rules": [
+    {
+      "trigger": "github.pr.merged",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "jenkins_build",
+          "delta": {
+            "build_number": 402,
+            "status": "SUCCESS"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "k8s.deployment.updated",
+          "delta": {
+            "image": "api-service:v2.4.1",
+            "replicas": 5
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "k8s.deployment.updated",
+      "actions": [
+        {
+          "type": "update",
+          "resource": "datadog_metrics",
+          "delta": {
+            "cpu_user": 98.4,
+            "error_rate": 0.14
+          }
+        },
+        {
+          "type": "emit",
+          "event": "datadog.metric.spiked",
+          "delta": {
+            "alert_level": "P1_CRITICAL"
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "datadog.metric.spiked",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "pagerduty_incident",
+          "delta": {
+            "incident_id": "INC_4012",
+            "title": "CPU & Latency Spike on API Service"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "slack.channel.created",
+          "delta": {
+            "channel": "#incident-4012-war-room"
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "GitHub",
+      "method": "POST",
+      "path": "/repos/owner/app/pulls/42/merge",
+      "description": "Merge Pull Request to main"
+    },
+    {
+      "system": "Kubernetes",
+      "method": "PATCH",
+      "path": "/apis/apps/v1/namespaces/prod/deployments/api-service",
+      "description": "Update container image or rollback replica set"
+    },
+    {
+      "system": "Datadog",
+      "method": "GET",
+      "path": "/api/v1/query?query=avg:system.cpu.user",
+      "description": "Query real-time metric timeseries"
+    },
+    {
+      "system": "PagerDuty",
+      "method": "POST",
+      "path": "/incidents/:id/resolve",
+      "description": "Resolve active P1 security/outage incident"
+    },
+    {
+      "system": "Slack",
+      "method": "POST",
+      "path": "/conversations.create",
+      "description": "Create dedicated incident war room channel"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 96.8,
+    "workflow_completion": 91.5,
+    "recovery_intelligence": 94.1,
+    "state_efficiency": 88.9,
+    "safety_score": 97.5
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\n    \"devops-incident\",\n    branch=\"agent-incident-4012\",\n    scenario=\"cpu_spike_rollback\"\n)\n\nagent.configure(api_base=world.base_url)\nresult = arena.evaluate(agent)\nprint(f\"Incident Recovery Speed: {result.metrics['recovery_intelligence']}%\")"
+}

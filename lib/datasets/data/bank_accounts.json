@@ -1,0 +1,122 @@
+[
+  {
+    "id": "acc_401",
+    "account_number": "**** **** 4810",
+    "account_type": "checking",
+    "balance": 1200,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_402",
+    "account_number": "**** **** 4811",
+    "account_type": "savings",
+    "balance": 1650.75,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_403",
+    "account_number": "**** **** 4812",
+    "account_type": "investment",
+    "balance": 2101.5,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_404",
+    "account_number": "**** **** 4813",
+    "account_type": "checking",
+    "balance": 2552.25,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_405",
+    "account_number": "**** **** 4814",
+    "account_type": "savings",
+    "balance": 3003,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_406",
+    "account_number": "**** **** 4815",
+    "account_type": "investment",
+    "balance": 3453.75,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_407",
+    "account_number": "**** **** 4816",
+    "account_type": "checking",
+    "balance": 3904.5,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_408",
+    "account_number": "**** **** 4817",
+    "account_type": "savings",
+    "balance": 4355.25,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_409",
+    "account_number": "**** **** 4818",
+    "account_type": "investment",
+    "balance": 4806,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_410",
+    "account_number": "**** **** 4819",
+    "account_type": "checking",
+    "balance": 5256.75,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_411",
+    "account_number": "**** **** 48110",
+    "account_type": "savings",
+    "balance": 5707.5,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_412",
+    "account_number": "**** **** 48111",
+    "account_type": "investment",
+    "balance": 6158.25,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_413",
+    "account_number": "**** **** 48112",
+    "account_type": "checking",
+    "balance": 6609,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_414",
+    "account_number": "**** **** 48113",
+    "account_type": "savings",
+    "balance": 7059.75,
+    "currency": "USD",
+    "is_frozen": false
+  },
+  {
+    "id": "acc_415",
+    "account_number": "**** **** 48114",
+    "account_type": "investment",
+    "balance": 7510.5,
+    "currency": "USD",
+    "is_frozen": false
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "inv_901",
+    "customer_email": "billing0@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2024-12-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_902",
+    "customer_email": "billing1@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-01-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_903",
+    "customer_email": "billing2@example.com",
+    "plan_name": "Enterprise",
+    "amount": 499,
+    "status": "paid",
+    "created_at": "2025-02-28T21:00:00.000Z"
+  },
+  {
+    "id": "inv_904",
+    "customer_email": "billing3@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2025-03-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_905",
+    "customer_email": "billing4@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-04-30T21:00:00.000Z"
+  },
+  {
+    "id": "inv_906",
+    "customer_email": "billing5@example.com",
+    "plan_name": "Enterprise",
+    "amount": 499,
+    "status": "paid",
+    "created_at": "2025-05-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_907",
+    "customer_email": "billing6@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2025-06-30T21:00:00.000Z"
+  },
+  {
+    "id": "inv_908",
+    "customer_email": "billing7@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-07-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_909",
+    "customer_email": "billing8@example.com",
+    "plan_name": "Enterprise",
+    "amount": 499,
+    "status": "paid",
+    "created_at": "2025-08-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_910",
+    "customer_email": "billing9@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2025-09-30T21:00:00.000Z"
+  },
+  {
+    "id": "inv_911",
+    "customer_email": "billing10@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-10-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_912",
+    "customer_email": "billing11@example.com",
+    "plan_name": "Enterprise",
+    "amount": 499,
+    "status": "paid",
+    "created_at": "2025-11-30T21:00:00.000Z"
+  },
+  {
+    "id": "inv_913",
+    "customer_email": "billing12@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2024-12-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_914",
+    "customer_email": "billing13@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-01-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_915",
+    "customer_email": "billing14@example.com",
+    "plan_name": "Enterprise",
+    "amount": 499,
+    "status": "paid",
+    "created_at": "2025-02-28T21:00:00.000Z"
+  },
+  {
+    "id": "inv_916",
+    "customer_email": "billing15@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2025-03-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_917",
+    "customer_email": "billing16@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-04-30T21:00:00.000Z"
+  },
+  {
+    "id": "inv_918",
+    "customer_email": "billing17@example.com",
+    "plan_name": "Enterprise",
+    "amount": 499,
+    "status": "paid",
+    "created_at": "2025-05-31T21:00:00.000Z"
+  },
+  {
+    "id": "inv_919",
+    "customer_email": "billing18@example.com",
+    "plan_name": "Starter",
+    "amount": 29,
+    "status": "paid",
+    "created_at": "2025-06-30T21:00:00.000Z"
+  },
+  {
+    "id": "inv_920",
+    "customer_email": "billing19@example.com",
+    "plan_name": "Pro",
+    "amount": 99,
+    "status": "paid",
+    "created_at": "2025-07-31T21:00:00.000Z"
+  }
+]

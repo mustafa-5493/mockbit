@@ -1,0 +1,18 @@
+{
+  "behavior_id": "refund_flow",
+  "name": "Enterprise Refund & Ledger Reconciliation",
+  "domain": "finance",
+  "trigger": "payment.refunded",
+  "steps": [
+    "ledger.adjust_entry",
+    "tax.update_liability",
+    "customer.notify_email",
+    "audit.append_log"
+  ],
+  "expected_world_state": "RESOLVED",
+  "required_invariants": [
+    "refund_amount <= original_charge",
+    "ledger_balance_zero"
+  ],
+  "description": "Multi-system event cascade for automated refund processing, tax adjustment, and audit log appending."
+}

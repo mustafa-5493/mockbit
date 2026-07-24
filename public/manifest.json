@@ -1,0 +1,16 @@
+{
+  "name": "Mockbit — Stateful API Runtime & AI Agent Substrate",
+  "short_name": "Mockbit",
+  "description": "Zero-install stateful REST API runtime, multi-system event engine, and AI agent evaluation substrate.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

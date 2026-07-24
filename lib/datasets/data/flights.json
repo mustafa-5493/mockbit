@@ -1,0 +1,152 @@
+[
+  {
+    "id": "flt_101",
+    "flight_number": "SK-400",
+    "airline": "SkyWays",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "delayed",
+    "gate": "B1",
+    "departure_time": "2026-01-24T07:00:00.000Z"
+  },
+  {
+    "id": "flt_102",
+    "flight_number": "AE-401",
+    "airline": "AeroJet",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B2",
+    "departure_time": "2026-01-24T08:00:00.000Z"
+  },
+  {
+    "id": "flt_103",
+    "flight_number": "GL-402",
+    "airline": "GlobalAir",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B3",
+    "departure_time": "2026-01-24T09:00:00.000Z"
+  },
+  {
+    "id": "flt_104",
+    "flight_number": "SK-403",
+    "airline": "SkyWays",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B4",
+    "departure_time": "2026-01-24T10:00:00.000Z"
+  },
+  {
+    "id": "flt_105",
+    "flight_number": "AE-404",
+    "airline": "AeroJet",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "delayed",
+    "gate": "B5",
+    "departure_time": "2026-01-24T11:00:00.000Z"
+  },
+  {
+    "id": "flt_106",
+    "flight_number": "GL-405",
+    "airline": "GlobalAir",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B6",
+    "departure_time": "2026-01-24T12:00:00.000Z"
+  },
+  {
+    "id": "flt_107",
+    "flight_number": "SK-406",
+    "airline": "SkyWays",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B7",
+    "departure_time": "2026-01-24T07:00:00.000Z"
+  },
+  {
+    "id": "flt_108",
+    "flight_number": "AE-407",
+    "airline": "AeroJet",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B8",
+    "departure_time": "2026-01-24T08:00:00.000Z"
+  },
+  {
+    "id": "flt_109",
+    "flight_number": "GL-408",
+    "airline": "GlobalAir",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "delayed",
+    "gate": "B9",
+    "departure_time": "2026-01-24T09:00:00.000Z"
+  },
+  {
+    "id": "flt_110",
+    "flight_number": "SK-409",
+    "airline": "SkyWays",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B10",
+    "departure_time": "2026-01-24T10:00:00.000Z"
+  },
+  {
+    "id": "flt_111",
+    "flight_number": "AE-410",
+    "airline": "AeroJet",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B11",
+    "departure_time": "2026-01-24T11:00:00.000Z"
+  },
+  {
+    "id": "flt_112",
+    "flight_number": "GL-411",
+    "airline": "GlobalAir",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B12",
+    "departure_time": "2026-01-24T12:00:00.000Z"
+  },
+  {
+    "id": "flt_113",
+    "flight_number": "SK-412",
+    "airline": "SkyWays",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "delayed",
+    "gate": "B1",
+    "departure_time": "2026-01-24T07:00:00.000Z"
+  },
+  {
+    "id": "flt_114",
+    "flight_number": "AE-413",
+    "airline": "AeroJet",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B2",
+    "departure_time": "2026-01-24T08:00:00.000Z"
+  },
+  {
+    "id": "flt_115",
+    "flight_number": "GL-414",
+    "airline": "GlobalAir",
+    "origin": "SFO",
+    "destination": "JFK",
+    "status": "on_time",
+    "gate": "B3",
+    "departure_time": "2026-01-24T09:00:00.000Z"
+  }
+]

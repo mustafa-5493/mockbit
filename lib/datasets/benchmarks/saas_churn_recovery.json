@@ -1,0 +1,15 @@
+{
+  "benchmark_id": "saas_churn_recovery",
+  "title": "Fintech Failed Payment Recovery & Customer Retention",
+  "target_world": "fintech-billing",
+  "trigger_event": "stripe.charge.failed",
+  "optimal_path": [
+    "dunning.schedule_retry",
+    "twilio.send_sms_update",
+    "chargebee.update_grace_period",
+    "zendesk.create_vip_ticket"
+  ],
+  "max_ticks": 5,
+  "golden_digest": "f39b1a0e88c7d8a9e0123456789abcdef0123456",
+  "description": "Evaluates whether a billing recovery agent can orchestrate dunning retries and SMS notification before revoking SaaS access."
+}

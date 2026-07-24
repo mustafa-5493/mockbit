@@ -1,0 +1,18 @@
+{
+  "behavior_id": "shipment_return",
+  "name": "E-Commerce Return & Warehouse Restock",
+  "domain": "logistics",
+  "trigger": "customer.return_initiated",
+  "steps": [
+    "fedex.generate_return_label",
+    "warehouse.reserve_restock_slot",
+    "stripe.issue_store_credit",
+    "crm.update_timeline"
+  ],
+  "expected_world_state": "RESOLVED",
+  "required_invariants": [
+    "restock_quantity == return_quantity",
+    "return_label_created == true"
+  ],
+  "description": "E-commerce customer return authorization, carrier label generation, warehouse restock, and credit issuance."
+}

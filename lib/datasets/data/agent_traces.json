@@ -1,0 +1,137 @@
+[
+  {
+    "id": "trace_901",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "web_search",
+    "execution_time_ms": 120,
+    "tokens_used": 450,
+    "status": "success",
+    "timestamp": "2025-12-31T21:00:00.000Z"
+  },
+  {
+    "id": "trace_902",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "code_executor",
+    "execution_time_ms": 155,
+    "tokens_used": 530,
+    "status": "success",
+    "timestamp": "2026-01-01T21:00:00.000Z"
+  },
+  {
+    "id": "trace_903",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "database_query",
+    "execution_time_ms": 190,
+    "tokens_used": 610,
+    "status": "success",
+    "timestamp": "2026-01-02T21:00:00.000Z"
+  },
+  {
+    "id": "trace_904",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "web_search",
+    "execution_time_ms": 225,
+    "tokens_used": 690,
+    "status": "success",
+    "timestamp": "2026-01-03T21:00:00.000Z"
+  },
+  {
+    "id": "trace_905",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "code_executor",
+    "execution_time_ms": 260,
+    "tokens_used": 770,
+    "status": "success",
+    "timestamp": "2026-01-04T21:00:00.000Z"
+  },
+  {
+    "id": "trace_906",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "database_query",
+    "execution_time_ms": 295,
+    "tokens_used": 850,
+    "status": "success",
+    "timestamp": "2026-01-05T21:00:00.000Z"
+  },
+  {
+    "id": "trace_907",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "web_search",
+    "execution_time_ms": 330,
+    "tokens_used": 930,
+    "status": "success",
+    "timestamp": "2026-01-06T21:00:00.000Z"
+  },
+  {
+    "id": "trace_908",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "code_executor",
+    "execution_time_ms": 365,
+    "tokens_used": 1010,
+    "status": "success",
+    "timestamp": "2026-01-07T21:00:00.000Z"
+  },
+  {
+    "id": "trace_909",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "database_query",
+    "execution_time_ms": 400,
+    "tokens_used": 1090,
+    "status": "success",
+    "timestamp": "2026-01-08T21:00:00.000Z"
+  },
+  {
+    "id": "trace_910",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "web_search",
+    "execution_time_ms": 435,
+    "tokens_used": 1170,
+    "status": "success",
+    "timestamp": "2026-01-09T21:00:00.000Z"
+  },
+  {
+    "id": "trace_911",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "code_executor",
+    "execution_time_ms": 470,
+    "tokens_used": 1250,
+    "status": "success",
+    "timestamp": "2026-01-10T21:00:00.000Z"
+  },
+  {
+    "id": "trace_912",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "database_query",
+    "execution_time_ms": 505,
+    "tokens_used": 1330,
+    "status": "success",
+    "timestamp": "2026-01-11T21:00:00.000Z"
+  },
+  {
+    "id": "trace_913",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "web_search",
+    "execution_time_ms": 540,
+    "tokens_used": 1410,
+    "status": "success",
+    "timestamp": "2026-01-12T21:00:00.000Z"
+  },
+  {
+    "id": "trace_914",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "code_executor",
+    "execution_time_ms": 575,
+    "tokens_used": 1490,
+    "status": "success",
+    "timestamp": "2026-01-13T21:00:00.000Z"
+  },
+  {
+    "id": "trace_915",
+    "agent_name": "Antigravity Code Assistant",
+    "tool_called": "database_query",
+    "execution_time_ms": 610,
+    "tokens_used": 1570,
+    "status": "success",
+    "timestamp": "2026-01-14T21:00:00.000Z"
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "sensor_201",
+    "device_id": "iot_node_10",
+    "temperature_celsius": 21.5,
+    "humidity_pct": 45,
+    "battery_level_pct": 95,
+    "status": "online",
+    "last_ping": "2026-01-23T09:00:00.000Z"
+  },
+  {
+    "id": "sensor_202",
+    "device_id": "iot_node_11",
+    "temperature_celsius": 22.3,
+    "humidity_pct": 46,
+    "battery_level_pct": 93,
+    "status": "online",
+    "last_ping": "2026-01-23T09:01:00.000Z"
+  },
+  {
+    "id": "sensor_203",
+    "device_id": "iot_node_12",
+    "temperature_celsius": 23.1,
+    "humidity_pct": 47,
+    "battery_level_pct": 91,
+    "status": "online",
+    "last_ping": "2026-01-23T09:02:00.000Z"
+  },
+  {
+    "id": "sensor_204",
+    "device_id": "iot_node_13",
+    "temperature_celsius": 23.9,
+    "humidity_pct": 48,
+    "battery_level_pct": 89,
+    "status": "online",
+    "last_ping": "2026-01-23T09:03:00.000Z"
+  },
+  {
+    "id": "sensor_205",
+    "device_id": "iot_node_14",
+    "temperature_celsius": 24.7,
+    "humidity_pct": 49,
+    "battery_level_pct": 87,
+    "status": "online",
+    "last_ping": "2026-01-23T09:04:00.000Z"
+  },
+  {
+    "id": "sensor_206",
+    "device_id": "iot_node_15",
+    "temperature_celsius": 21.5,
+    "humidity_pct": 50,
+    "battery_level_pct": 85,
+    "status": "online",
+    "last_ping": "2026-01-23T09:05:00.000Z"
+  },
+  {
+    "id": "sensor_207",
+    "device_id": "iot_node_16",
+    "temperature_celsius": 22.3,
+    "humidity_pct": 51,
+    "battery_level_pct": 83,
+    "status": "online",
+    "last_ping": "2026-01-23T09:06:00.000Z"
+  },
+  {
+    "id": "sensor_208",
+    "device_id": "iot_node_17",
+    "temperature_celsius": 23.1,
+    "humidity_pct": 52,
+    "battery_level_pct": 81,
+    "status": "online",
+    "last_ping": "2026-01-23T09:07:00.000Z"
+  },
+  {
+    "id": "sensor_209",
+    "device_id": "iot_node_18",
+    "temperature_celsius": 23.9,
+    "humidity_pct": 53,
+    "battery_level_pct": 79,
+    "status": "online",
+    "last_ping": "2026-01-23T09:08:00.000Z"
+  },
+  {
+    "id": "sensor_210",
+    "device_id": "iot_node_19",
+    "temperature_celsius": 24.7,
+    "humidity_pct": 54,
+    "battery_level_pct": 77,
+    "status": "online",
+    "last_ping": "2026-01-23T09:09:00.000Z"
+  },
+  {
+    "id": "sensor_211",
+    "device_id": "iot_node_20",
+    "temperature_celsius": 21.5,
+    "humidity_pct": 45,
+    "battery_level_pct": 75,
+    "status": "online",
+    "last_ping": "2026-01-23T09:10:00.000Z"
+  },
+  {
+    "id": "sensor_212",
+    "device_id": "iot_node_21",
+    "temperature_celsius": 22.3,
+    "humidity_pct": 46,
+    "battery_level_pct": 73,
+    "status": "online",
+    "last_ping": "2026-01-23T09:11:00.000Z"
+  },
+  {
+    "id": "sensor_213",
+    "device_id": "iot_node_22",
+    "temperature_celsius": 23.1,
+    "humidity_pct": 47,
+    "battery_level_pct": 71,
+    "status": "online",
+    "last_ping": "2026-01-23T09:12:00.000Z"
+  },
+  {
+    "id": "sensor_214",
+    "device_id": "iot_node_23",
+    "temperature_celsius": 23.9,
+    "humidity_pct": 48,
+    "battery_level_pct": 69,
+    "status": "online",
+    "last_ping": "2026-01-23T09:13:00.000Z"
+  },
+  {
+    "id": "sensor_215",
+    "device_id": "iot_node_24",
+    "temperature_celsius": 24.7,
+    "humidity_pct": 49,
+    "battery_level_pct": 67,
+    "status": "online",
+    "last_ping": "2026-01-23T09:14:00.000Z"
+  },
+  {
+    "id": "sensor_216",
+    "device_id": "iot_node_25",
+    "temperature_celsius": 21.5,
+    "humidity_pct": 50,
+    "battery_level_pct": 65,
+    "status": "online",
+    "last_ping": "2026-01-23T09:15:00.000Z"
+  },
+  {
+    "id": "sensor_217",
+    "device_id": "iot_node_26",
+    "temperature_celsius": 22.3,
+    "humidity_pct": 51,
+    "battery_level_pct": 63,
+    "status": "online",
+    "last_ping": "2026-01-23T09:16:00.000Z"
+  },
+  {
+    "id": "sensor_218",
+    "device_id": "iot_node_27",
+    "temperature_celsius": 23.1,
+    "humidity_pct": 52,
+    "battery_level_pct": 61,
+    "status": "online",
+    "last_ping": "2026-01-23T09:17:00.000Z"
+  },
+  {
+    "id": "sensor_219",
+    "device_id": "iot_node_28",
+    "temperature_celsius": 23.9,
+    "humidity_pct": 53,
+    "battery_level_pct": 59,
+    "status": "online",
+    "last_ping": "2026-01-23T09:18:00.000Z"
+  },
+  {
+    "id": "sensor_220",
+    "device_id": "iot_node_29",
+    "temperature_celsius": 24.7,
+    "humidity_pct": 54,
+    "battery_level_pct": 57,
+    "status": "online",
+    "last_ping": "2026-01-23T09:19:00.000Z"
+  }
+]

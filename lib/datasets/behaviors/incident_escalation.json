@@ -1,0 +1,18 @@
+{
+  "behavior_id": "incident_escalation",
+  "name": "DevOps Automated Incident Escalation & Patch",
+  "domain": "engineering",
+  "trigger": "datadog.alert.high_error_rate",
+  "steps": [
+    "pagerduty.trigger_incident",
+    "slack.notify_oncall",
+    "k8s.rollback_deployment",
+    "jira.create_postmortem"
+  ],
+  "expected_world_state": "RECOVERY",
+  "required_invariants": [
+    "active_replicas > 0",
+    "error_rate < 0.01"
+  ],
+  "description": "Automated site reliability engineering incident escalation, deployment rollback, and postmortem ticket creation."
+}

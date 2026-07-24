@@ -1,0 +1,110 @@
+{
+  "id": "custom-sap-erp",
+  "name": "Custom SAP ERP Financials",
+  "tagline": "Compiled Enterprise Digital Twin (Custom System)",
+  "category": "Enterprise Digital Twin",
+  "description": "Compiled from input schema (Standard Spec). Complete with entity graph, event DAG, domain invariants, and executable workflows.",
+  "systems": [
+    "Enterprise Core",
+    "API Gateway",
+    "Database Cluster",
+    "Audit Logger"
+  ],
+  "entity_graph": [
+    "Account",
+    "User",
+    "Transaction",
+    "AuditRecord"
+  ],
+  "event_cascade": [
+    "Transaction Initiated",
+    "State Verified",
+    "Ledger Updated",
+    "Audit Logged"
+  ],
+  "workflows": [
+    {
+      "id": "wf_custom-sap-erp_core",
+      "name": "Custom SAP ERP Financials Core Execution Workflow",
+      "start_event": "custom-sap-erp.transaction.created",
+      "required_events": [
+        "custom-sap-erp.state.verified",
+        "custom-sap-erp.ledger.updated"
+      ],
+      "success_event": "custom-sap-erp.audit.appended",
+      "failure_event": "arena.invariant.failed"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "inv_custom-sap-erp_balance",
+      "description": "Transaction amount must not exceed balance limit",
+      "check_field": "amount",
+      "operator": "less_than_or_equal",
+      "check_value": 10000,
+      "on_fail_emit": "arena.invariant.failed"
+    }
+  ],
+  "event_rules": [
+    {
+      "trigger": "custom-sap-erp.transaction.created",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "ledger_entry",
+          "delta": {
+            "status": "PENDING_VERIFICATION"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "custom-sap-erp.state.verified",
+          "delta": {
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "custom-sap-erp.state.verified",
+      "actions": [
+        {
+          "type": "update",
+          "resource": "ledger_entry",
+          "delta": {
+            "status": "POSTED"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "custom-sap-erp.audit.appended",
+          "delta": {
+            "audit_complete": true
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "Enterprise Core",
+      "method": "POST",
+      "path": "/v1/transactions",
+      "description": "Create enterprise transaction"
+    },
+    {
+      "system": "Audit Logger",
+      "method": "GET",
+      "path": "/v1/audit/logs",
+      "description": "Retrieve compliance audit trail"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 98,
+    "workflow_completion": 95,
+    "recovery_intelligence": 92,
+    "state_efficiency": 94,
+    "safety_score": 99
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\"custom-sap-erp\", branch=\"agent-run-101\")\nresult = arena.evaluate(agent)"
+}

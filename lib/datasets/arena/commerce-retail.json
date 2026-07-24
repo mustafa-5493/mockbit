@@ -1,0 +1,107 @@
+{
+  "id": "commerce-retail",
+  "name": "Commerce & Logistics Cloud",
+  "tagline": "Retail Order Lifecycle, Warehouse Inventory & Return Support",
+  "category": "Retail & E-Commerce",
+  "description": "Simulates customer checkout, warehouse inventory reservation, Twilio SMS notifications, FedEx shipping, returns, coupon fraud, and CRM support.",
+  "systems": [
+    "Shopify Catalog",
+    "Inventory Warehouse",
+    "Stripe Checkout",
+    "FedEx Shipping",
+    "Twilio SMS",
+    "Klaviyo CRM",
+    "Support Desk"
+  ],
+  "entity_graph": [
+    "Customers",
+    "Catalog Products",
+    "Warehouse Stock",
+    "Orders",
+    "Payments",
+    "Shipments",
+    "SMS Notifications",
+    "Return Requests"
+  ],
+  "event_cascade": [
+    "Customer Cart Created & Item Added (Shopify)",
+    "Stock Reserved at Warehouse (Inventory Engine)",
+    "Payment Authorized & Charged (Stripe)",
+    "Shipping Label & Tracking Code Generated (FedEx)",
+    "SMS Shipping Confirmation Dispatched (Twilio)",
+    "Carrier Delay Event Simulated (Lost Package)",
+    "Customer Initiates Support Return Request",
+    "Refund Dispatched & Inventory Restocked"
+  ],
+  "workflows": [],
+  "invariants": [],
+  "event_rules": [
+    {
+      "trigger": "shopify.order.created",
+      "actions": [
+        {
+          "type": "update",
+          "resource": "warehouse_stock",
+          "delta": {
+            "reserved_qty": 1,
+            "available_qty": 9
+          }
+        },
+        {
+          "type": "emit",
+          "event": "fedex.label.generated",
+          "delta": {
+            "tracking_number": "TRK_99018273"
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "fedex.label.generated",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "twilio_sms",
+          "delta": {
+            "recipient": "+15550192837",
+            "body": "Your order has shipped! Tracking: TRK_99018273"
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "Shopify",
+      "method": "POST",
+      "path": "/admin/api/orders.json",
+      "description": "Create e-commerce order"
+    },
+    {
+      "system": "Inventory",
+      "method": "POST",
+      "path": "/v1/warehouse/reserve",
+      "description": "Reserve physical stock items"
+    },
+    {
+      "system": "FedEx",
+      "method": "POST",
+      "path": "/v1/shipments/label",
+      "description": "Generate shipping label & tracking number"
+    },
+    {
+      "system": "Twilio",
+      "method": "POST",
+      "path": "/v1/Messages.json",
+      "description": "Send SMS notification update"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 97.2,
+    "workflow_completion": 93.8,
+    "recovery_intelligence": 91,
+    "state_efficiency": 92.4,
+    "safety_score": 98.6
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\"commerce-retail\", branch=\"agent-order-99\")\nresult = arena.evaluate(agent)"
+}

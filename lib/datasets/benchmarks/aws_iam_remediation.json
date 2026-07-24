@@ -1,0 +1,15 @@
+{
+  "benchmark_id": "aws_iam_remediation",
+  "title": "AWS Cloud Security IAM Violation Remediation",
+  "target_world": "aws-cloud",
+  "trigger_event": "aws.iam.policy_violation",
+  "optimal_path": [
+    "aws.iam.revoke_public_policy",
+    "cloudwatch.alarm.acknowledge",
+    "terraform.remediation.apply",
+    "pagerduty.alert.resolve"
+  ],
+  "max_ticks": 4,
+  "golden_digest": "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3",
+  "description": "Evaluates whether an autonomous SRE agent can detect a public S3 IAM policy breach and apply Terraform remediation in sub-4 ticks."
+}

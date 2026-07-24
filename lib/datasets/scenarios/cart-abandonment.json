@@ -1,0 +1,177 @@
+{
+  "id": "cart-abandonment",
+  "name": "E-Commerce Cart Abandonment Journey",
+  "category": "E-Commerce",
+  "description": "Follows a user creating a cart, adding items, applying a discount, facing payment decline, and session expiration.",
+  "endpointSlug": "cart",
+  "steps": [
+    {
+      "version": 1,
+      "label": "v1: Cart Created",
+      "action": "POST /cart",
+      "diff": [
+        "+ cart_id: cart_9901",
+        "+ status: active",
+        "+ items_count: 0"
+      ],
+      "state": {
+        "id": "cart_9901",
+        "user_id": "usr_101",
+        "items": [],
+        "subtotal": 0,
+        "status": "active",
+        "coupon": null,
+        "checkout_step": "cart",
+        "session_active": true
+      }
+    },
+    {
+      "version": 2,
+      "label": "v2: Item Added",
+      "action": "POST /cart/items",
+      "diff": [
+        "+ item: \"Keychron K2 Keyboard\" ($99.99)",
+        "~ subtotal: 0.00 → 99.99",
+        "~ items_count: 0 → 1"
+      ],
+      "state": {
+        "id": "cart_9901",
+        "user_id": "usr_101",
+        "items": [
+          {
+            "id": "prod_1",
+            "title": "Keychron K2 Keyboard",
+            "price": 99.99,
+            "qty": 1
+          }
+        ],
+        "subtotal": 99.99,
+        "status": "active",
+        "coupon": null,
+        "checkout_step": "cart",
+        "session_active": true
+      }
+    },
+    {
+      "version": 3,
+      "label": "v3: Coupon Applied",
+      "action": "POST /cart/coupon",
+      "diff": [
+        "+ coupon: \"SAVE20\" (-$20.00)",
+        "~ subtotal: 99.99 → 79.99",
+        "+ discount_applied: true"
+      ],
+      "state": {
+        "id": "cart_9901",
+        "user_id": "usr_101",
+        "items": [
+          {
+            "id": "prod_1",
+            "title": "Keychron K2 Keyboard",
+            "price": 99.99,
+            "qty": 1
+          }
+        ],
+        "subtotal": 79.99,
+        "status": "active",
+        "coupon": "SAVE20",
+        "discount_applied": true,
+        "checkout_step": "cart",
+        "session_active": true
+      }
+    },
+    {
+      "version": 4,
+      "label": "v4: Checkout Started",
+      "action": "POST /checkout",
+      "diff": [
+        "~ status: \"active\" → \"pending_payment\"",
+        "~ checkout_step: \"payment_input\"",
+        "+ payment_method_entered: true"
+      ],
+      "state": {
+        "id": "cart_9901",
+        "user_id": "usr_101",
+        "items": [
+          {
+            "id": "prod_1",
+            "title": "Keychron K2 Keyboard",
+            "price": 99.99,
+            "qty": 1
+          }
+        ],
+        "subtotal": 79.99,
+        "status": "pending_payment",
+        "coupon": "SAVE20",
+        "discount_applied": true,
+        "checkout_step": "payment_input",
+        "payment_method_entered": true,
+        "session_active": true
+      }
+    },
+    {
+      "version": 5,
+      "label": "v5: Payment Failed",
+      "action": "POST /checkout/pay",
+      "diff": [
+        "~ status: \"pending_payment\" → \"payment_failed\"",
+        "+ error: \"card_declined\"",
+        "+ retry_attempts: 1",
+        "+ notification_sent: true"
+      ],
+      "state": {
+        "id": "cart_9901",
+        "user_id": "usr_101",
+        "items": [
+          {
+            "id": "prod_1",
+            "title": "Keychron K2 Keyboard",
+            "price": 99.99,
+            "qty": 1
+          }
+        ],
+        "subtotal": 79.99,
+        "status": "payment_failed",
+        "error": "card_declined",
+        "coupon": "SAVE20",
+        "discount_applied": true,
+        "checkout_step": "payment_input",
+        "retry_attempts": 1,
+        "notification_sent": true,
+        "session_active": true
+      }
+    },
+    {
+      "version": 6,
+      "label": "v6: Cart Expired (Terminal)",
+      "action": "CRON /cart/cleanup",
+      "diff": [
+        "~ status: \"payment_failed\" → \"abandoned_expired\"",
+        "~ session_active: true → false",
+        "+ abandon_email_dispatched: true"
+      ],
+      "state": {
+        "id": "cart_9901",
+        "user_id": "usr_101",
+        "items": [
+          {
+            "id": "prod_1",
+            "title": "Keychron K2 Keyboard",
+            "price": 99.99,
+            "qty": 1
+          }
+        ],
+        "subtotal": 79.99,
+        "status": "abandoned_expired",
+        "error": "card_declined",
+        "coupon": "SAVE20",
+        "discount_applied": true,
+        "checkout_step": "expired",
+        "retry_attempts": 1,
+        "notification_sent": true,
+        "session_active": false,
+        "abandon_email_dispatched": true
+      }
+    }
+  ]
+}

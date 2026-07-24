@@ -1,0 +1,53 @@
+{
+  "name": "mockbit",
+  "version": "0.1.0",
+  "private": true,
+  "bin": {
+    "mockbit": "./bin/cli.mjs"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "cli": "node ./bin/cli.mjs",
+    "mockbit-ci": "tsx scripts/mockbit-cli.ts",
+    "lint": "eslint",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@monaco-editor/react": "^4.7.0",
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "autoprefixer": "^10.4.27",
+    "better-sqlite3": "^12.9.0",
+    "framer-motion": "^12.35.2",
+    "lucide-react": "^1.9.0",
+    "next": "15.5.12",
+    "posthog-js": "^1.371.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-is": "^19.2.4",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.8.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
+    "tailwindcss": "^3.4.19",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^20.19.37",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^17.3.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "husky": "^9.1.7",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

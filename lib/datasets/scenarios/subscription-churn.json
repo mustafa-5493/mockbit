@@ -1,0 +1,147 @@
+{
+  "id": "subscription-churn",
+  "name": "SaaS Subscription Churn Journey",
+  "category": "SaaS & Billing",
+  "description": "Tracks a customer moving from active trial to credit card failure, retries, past due, and cancellation.",
+  "endpointSlug": "subscriptions",
+  "steps": [
+    {
+      "version": 1,
+      "label": "v1: Trial Active",
+      "action": "POST /subscriptions",
+      "diff": [
+        "+ plan: Pro Monthly ($49/mo)",
+        "+ status: trialing",
+        "+ days_remaining: 14"
+      ],
+      "state": {
+        "id": "sub_401",
+        "customer": "sarah@cyberdyne.com",
+        "plan": "Pro Monthly",
+        "amount": 49,
+        "status": "trialing",
+        "days_remaining": 14,
+        "retries": 0,
+        "banner_warning": null,
+        "access_granted": true
+      }
+    },
+    {
+      "version": 2,
+      "label": "v2: Trial Expiring Alert",
+      "action": "EVENT /notifications/trial-ending",
+      "diff": [
+        "~ status: \"trialing\" → \"trial_ending_soon\"",
+        "~ days_remaining: 14 → 1",
+        "+ banner_warning: \"Your trial expires in 24 hours\"",
+        "+ warning_email_sent: true"
+      ],
+      "state": {
+        "id": "sub_401",
+        "customer": "sarah@cyberdyne.com",
+        "plan": "Pro Monthly",
+        "amount": 49,
+        "status": "trial_ending_soon",
+        "days_remaining": 1,
+        "retries": 0,
+        "banner_warning": "Your trial expires in 24 hours",
+        "warning_email_sent": true,
+        "access_granted": true
+      }
+    },
+    {
+      "version": 3,
+      "label": "v3: Renewal Failed (Retry 1)",
+      "action": "POST /invoices/charge",
+      "diff": [
+        "~ status: \"trial_ending_soon\" → \"past_due\"",
+        "~ retries: 0 → 1",
+        "+ last_error: \"insufficient_funds\"",
+        "+ dunning_email_1_sent: true"
+      ],
+      "state": {
+        "id": "sub_401",
+        "customer": "sarah@cyberdyne.com",
+        "plan": "Pro Monthly",
+        "amount": 49,
+        "status": "past_due",
+        "days_remaining": 0,
+        "retries": 1,
+        "last_error": "insufficient_funds",
+        "dunning_email_1_sent": true,
+        "access_granted": true
+      }
+    },
+    {
+      "version": 4,
+      "label": "v4: Payment Retry 2 Failed",
+      "action": "POST /invoices/retry",
+      "diff": [
+        "~ status: \"past_due\" → \"past_due_final_notice\"",
+        "~ retries: 1 → 2",
+        "+ grace_period_hours: 48",
+        "+ dunning_email_2_sent: true"
+      ],
+      "state": {
+        "id": "sub_401",
+        "customer": "sarah@cyberdyne.com",
+        "plan": "Pro Monthly",
+        "amount": 49,
+        "status": "past_due_final_notice",
+        "days_remaining": 0,
+        "retries": 2,
+        "last_error": "insufficient_funds",
+        "grace_period_hours": 48,
+        "dunning_email_2_sent": true,
+        "access_granted": true
+      }
+    },
+    {
+      "version": 5,
+      "label": "v5: Subscription Canceled",
+      "action": "POST /subscriptions/cancel",
+      "diff": [
+        "~ status: \"past_due_final_notice\" → \"canceled\"",
+        "~ access_granted: true → false",
+        "+ termination_timestamp: ISO",
+        "+ offboarding_survey_triggered: true"
+      ],
+      "state": {
+        "id": "sub_401",
+        "customer": "sarah@cyberdyne.com",
+        "plan": "Pro Monthly",
+        "amount": 49,
+        "status": "canceled",
+        "days_remaining": 0,
+        "retries": 2,
+        "last_error": "insufficient_funds",
+        "access_granted": false,
+        "termination_timestamp": "2026-01-20T00:00:00Z",
+        "offboarding_survey_triggered": true
+      }
+    },
+    {
+      "version": 6,
+      "label": "v6: Winback Offer Dispatched",
+      "action": "POST /marketing/winback",
+      "diff": [
+        "+ winback_sent: true",
+        "+ discount_offer: \"50% OFF 3 Months\"",
+        "+ promo_code: \"RETURN50\""
+      ],
+      "state": {
+        "id": "sub_401",
+        "customer": "sarah@cyberdyne.com",
+        "plan": "Pro Monthly",
+        "amount": 49,
+        "status": "canceled",
+        "days_remaining": 0,
+        "retries": 2,
+        "access_granted": false,
+        "winback_sent": true,
+        "discount_offer": "50% OFF 3 Months",
+        "promo_code": "RETURN50"
+      }
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "id": "fraud-detection",
+  "name": "Fintech High-Risk Fraud Flow (With Branching Terminal Outcomes)",
+  "category": "Fintech & Risk",
+  "description": "Demonstrates a wire transfer flagged for velocity risk score, SMS MFA challenge, and non-linear branching terminal outcomes (Approved vs Account Frozen).",
+  "endpointSlug": "transfers",
+  "steps": [
+    {
+      "version": 1,
+      "label": "v1: Transfer Initiated",
+      "action": "POST /transfers",
+      "diff": [
+        "+ transfer_id: txn_8801",
+        "+ amount: $4,500.00",
+        "+ status: pending",
+        "+ risk_score: 12"
+      ],
+      "state": {
+        "id": "txn_8801",
+        "account": "acc_401",
+        "amount": 4500,
+        "recipient": "external_wire_99",
+        "status": "pending",
+        "risk_score": 12,
+        "mfa_required": false,
+        "account_frozen": false
+      }
+    },
+    {
+      "version": 2,
+      "label": "v2: Velocity Check Flagged",
+      "action": "EVENT /risk/evaluate",
+      "diff": [
+        "~ risk_score: 12 → 88 (HIGH RISK)",
+        "~ status: \"pending\" → \"flagged_suspicious\"",
+        "+ auto_hold_placed: true"
+      ],
+      "state": {
+        "id": "txn_8801",
+        "account": "acc_401",
+        "amount": 4500,
+        "recipient": "external_wire_99",
+        "status": "flagged_suspicious",
+        "risk_score": 88,
+        "auto_hold_placed": true,
+        "mfa_required": false,
+        "account_frozen": false
+      }
+    },
+    {
+      "version": 3,
+      "label": "v3: MFA OTP Challenged",
+      "action": "POST /mfa/challenge",
+      "diff": [
+        "~ mfa_required: false → true",
+        "~ status: \"flagged_suspicious\" → \"awaiting_mfa\"",
+        "+ sms_otp_sent: true",
+        "+ otp_expires_in_secs: 300"
+      ],
+      "state": {
+        "id": "txn_8801",
+        "account": "acc_401",
+        "amount": 4500,
+        "recipient": "external_wire_99",
+        "status": "awaiting_mfa",
+        "risk_score": 88,
+        "auto_hold_placed": true,
+        "mfa_required": true,
+        "sms_otp_sent": true,
+        "otp_expires_in_secs": 300,
+        "mfa_attempts": 0,
+        "account_frozen": false
+      }
+    },
+    {
+      "version": 4,
+      "label": "v4: MFA Failed 2x",
+      "action": "POST /mfa/verify",
+      "diff": [
+        "~ mfa_attempts: 0 → 2",
+        "+ last_error: \"invalid_code_2x\"",
+        "+ max_attempts_remaining: 1"
+      ],
+      "state": {
+        "id": "txn_8801",
+        "account": "acc_401",
+        "amount": 4500,
+        "recipient": "external_wire_99",
+        "status": "awaiting_mfa",
+        "risk_score": 88,
+        "auto_hold_placed": true,
+        "mfa_required": true,
+        "mfa_attempts": 2,
+        "last_error": "invalid_code_2x",
+        "max_attempts_remaining": 1,
+        "account_frozen": false
+      }
+    },
+    {
+      "version": 5,
+      "label": "v5a: MFA Succeeded ➔ Approved",
+      "action": "POST /mfa/verify (Correct OTP)",
+      "branchId": "approved",
+      "branchName": "Branch A: Approved",
+      "diff": [
+        "~ status: \"awaiting_mfa\" → \"transfer_approved\"",
+        "~ auto_hold_placed: true → false",
+        "+ wire_reference: WIRE_889021",
+        "+ funds_released: true"
+      ],
+      "state": {
+        "id": "txn_8801",
+        "account": "acc_401",
+        "amount": 4500,
+        "recipient": "external_wire_99",
+        "status": "transfer_approved",
+        "risk_score": 88,
+        "auto_hold_placed": false,
+        "mfa_required": true,
+        "mfa_attempts": 3,
+        "wire_reference": "WIRE_889021",
+        "funds_released": true,
+        "account_frozen": false
+      }
+    },
+    {
+      "version": 5,
+      "label": "v5b: MFA Failed 3x ➔ Account Frozen",
+      "action": "POST /mfa/verify (Failed 3x)",
+      "branchId": "frozen",
+      "branchName": "Branch B: Security Frozen",
+      "diff": [
+        "~ status: \"awaiting_mfa\" → \"account_frozen_security\"",
+        "~ account_frozen: false → true",
+        "+ security_incident_id: INC_4012",
+        "+ fraud_alert_dispatched: true"
+      ],
+      "state": {
+        "id": "txn_8801",
+        "account": "acc_401",
+        "amount": 4500,
+        "recipient": "external_wire_99",
+        "status": "account_frozen_security",
+        "risk_score": 88,
+        "auto_hold_placed": true,
+        "mfa_required": true,
+        "mfa_attempts": 3,
+        "account_frozen": true,
+        "security_incident_id": "INC_4012",
+        "fraud_alert_dispatched": true
+      }
+    }
+  ]
+}

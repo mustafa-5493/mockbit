@@ -1,0 +1,185 @@
+{
+  "id": "salesforce-lead2cash",
+  "name": "Salesforce Lead-to-Cash",
+  "tagline": "Enterprise CRM, CPQ Quotes, NetSuite ERP & Order Fulfill",
+  "category": "Enterprise Revenue Engine",
+  "description": "Simulates Lead conversion, CPQ Quote generation, DocuSign e-Signature contracts, NetSuite ERP orders, Stripe invoicing, and QuickBooks ledger balancing.",
+  "systems": [
+    "Salesforce CRM",
+    "CPQ Engine",
+    "DocuSign Contracts",
+    "NetSuite ERP",
+    "Stripe Invoicing",
+    "QuickBooks Ledger",
+    "Audit Trail"
+  ],
+  "entity_graph": [
+    "Leads",
+    "Contacts",
+    "Accounts",
+    "Opportunities",
+    "Quotes",
+    "Contracts",
+    "Orders",
+    "Invoices",
+    "Payments"
+  ],
+  "event_cascade": [
+    "Lead Qualified & Converted to Contact/Account (Salesforce)",
+    "Opportunity Marked Closed-Won ($120,000 ARR)",
+    "CPQ Itemized Quote Approved",
+    "DocuSign Executive E-Signature Executed",
+    "NetSuite ERP Sales Order & Fulfillment Created",
+    "Stripe Electronic Invoice Issued",
+    "Payment Authorized & QuickBooks Ledger Balanced"
+  ],
+  "workflows": [
+    {
+      "id": "wf_lead_to_cash",
+      "name": "Salesforce Lead-to-Cash End-to-End Workflow",
+      "start_event": "salesforce.opportunity.closed_won",
+      "required_events": [
+        "cpq.quote.approved",
+        "docusign.contract.signed",
+        "netsuite.order.created"
+      ],
+      "success_event": "stripe.invoice.paid",
+      "failure_event": "arena.invariant.failed"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "inv_opp_account",
+      "description": "Closed-Won Opportunity must have an associated Account ID",
+      "check_field": "account_id",
+      "operator": "not_null",
+      "check_value": null,
+      "on_fail_emit": "arena.invariant.failed"
+    },
+    {
+      "id": "inv_invoice_balance",
+      "description": "Invoice total must equal order ARR total ($120,000)",
+      "check_field": "amount",
+      "operator": "less_than_or_equal",
+      "check_value": 120000,
+      "on_fail_emit": "arena.invariant.failed"
+    }
+  ],
+  "event_rules": [
+    {
+      "trigger": "salesforce.opportunity.closed_won",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "cpq_quote",
+          "delta": {
+            "quote_id": "Q_9901",
+            "status": "APPROVED",
+            "amount": 120000
+          }
+        },
+        {
+          "type": "emit",
+          "event": "cpq.quote.approved",
+          "delta": {
+            "quote_approved": true
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "cpq.quote.approved",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "docusign_contract",
+          "delta": {
+            "contract_id": "CTR_4021",
+            "signed": true
+          }
+        },
+        {
+          "type": "emit",
+          "event": "docusign.contract.signed",
+          "delta": {
+            "contract_signed": true
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "docusign.contract.signed",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "netsuite_order",
+          "delta": {
+            "order_id": "ORD_8801",
+            "arr": 120000
+          }
+        },
+        {
+          "type": "emit",
+          "event": "netsuite.order.created",
+          "delta": {
+            "order_synced": true
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "netsuite.order.created",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "stripe_invoice",
+          "delta": {
+            "invoice_id": "inv_99012",
+            "paid": true
+          }
+        },
+        {
+          "type": "emit",
+          "event": "stripe.invoice.paid",
+          "delta": {
+            "payment_complete": true
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "Salesforce",
+      "method": "POST",
+      "path": "/services/data/v58.0/sobjects/Opportunity",
+      "description": "Create or update CRM Opportunity"
+    },
+    {
+      "system": "CPQ Engine",
+      "method": "POST",
+      "path": "/v1/quotes/approve",
+      "description": "Approve itemized CPQ Quote"
+    },
+    {
+      "system": "DocuSign",
+      "method": "POST",
+      "path": "/v2.1/accounts/:id/envelopes",
+      "description": "Send e-signature contract envelope"
+    },
+    {
+      "system": "NetSuite",
+      "method": "POST",
+      "path": "/api/rest/v1/salesOrder",
+      "description": "Create NetSuite ERP sales order"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 99.2,
+    "workflow_completion": 96.4,
+    "recovery_intelligence": 91,
+    "state_efficiency": 93.5,
+    "safety_score": 99.8
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\"salesforce-lead2cash\", branch=\"agent-l2c-401\")\nresult = arena.evaluate(agent)"
+}

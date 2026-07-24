@@ -1,0 +1,16 @@
+{
+  "failure_id": "db_deadlock",
+  "category": "database",
+  "cause": "Circular row lock dependencies in concurrent SQL transactions",
+  "symptoms": [
+    "http_500_internal_error",
+    "connection_pool_exhaustion",
+    "transaction_timeout"
+  ],
+  "expected_agent_actions": [
+    "detect_deadlock_error_code",
+    "abort_lowest_priority_transaction",
+    "retry_with_exponential_backoff"
+  ],
+  "mitigation_rule": "Acquire row locks in consistent alphabetical table order"
+}

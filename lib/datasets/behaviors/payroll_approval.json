@@ -1,0 +1,18 @@
+{
+  "behavior_id": "payroll_approval",
+  "name": "Corporate Payroll Approval & Direct Deposit",
+  "domain": "hr_finance",
+  "trigger": "payroll.period_closed",
+  "steps": [
+    "manager.approve_timesheets",
+    "tax.calculate_withholding",
+    "ach.batch_direct_deposit",
+    "gl.post_payroll_journal"
+  ],
+  "expected_world_state": "HEALTHY",
+  "required_invariants": [
+    "total_disbursement == net_pay + tax_withheld",
+    "approval_count >= 2"
+  ],
+  "description": "Enterprise HR payroll batch processing, multi-manager approval verification, tax withholding, and ACH direct deposit."
+}

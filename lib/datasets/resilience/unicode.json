@@ -1,0 +1,128 @@
+{
+  "id": "unicode",
+  "name": "Unicode & i18n Stress Harness",
+  "category": "i18n & Unicode",
+  "description": "Internationalization torture test strings for verifying UTF-8 encoding, ZWJ emojis, and RTL text.",
+  "totalVectors": 7,
+  "vectors": [
+    {
+      "id": "rtl_1",
+      "category": "RTL Text & Mixed Bidirectional",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "مرحبا بكم - Hello Sarah 123! (שָׁלוֹם)",
+      "expected_safe_behavior": "Rendered with correct BiDi order without layout corruption",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "�"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Mixed Arabic RTL, Hebrew, and English LTR text string.",
+      "payload_b64": "2YXYsdit2KjYpyDYqNmD2YUgLSBIZWxsbyBTYXJhaCAxMjMhICjXqda414HXnNeV1rnXnSk="
+    },
+    {
+      "id": "zwj_1",
+      "category": "ZWJ Multi-Character Emoji",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "👩‍👩‍👧‍👦 (Family: Woman, Woman, Girl, Boy)",
+      "expected_safe_behavior": "Counted as 1 visual grapheme cluster; DB UTF-8MB4 storage supported",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "�"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Zero-Width Joiner sequence (7 code points, 1 visual character).",
+      "payload_b64": "8J+RqeKAjfCfkanigI3wn5Gn4oCN8J+RpiAoRmFtaWx5OiBXb21hbiwgV29tYW4sIEdpcmwsIEJveSk="
+    },
+    {
+      "id": "zalgo_1",
+      "category": "Combining Diacritics (Zalgo Text)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "T̶h̶e̶ ̶V̶o̶i̶d̶ ̶C̶o̶m̶e̶s̶ ̶H̶u̶n̶g̶e̶r̶s̶",
+      "expected_safe_behavior": "Container height capped or normalized without breaking UI layout",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "�"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Stacking combining diacritics that exceed line bounds.",
+      "payload_b64": "VMy2aMy2Zcy2IMy2Vsy2b8y2acy2ZMy2IMy2Q8y2b8y2bcy2Zcy2c8y2IMy2SMy2dcy2bsy2Z8y2Zcy2csy2c8y2"
+    },
+    {
+      "id": "surrogate_1",
+      "category": "Surrogate Pairs & CJK",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "𠮷野家 (Yoshinoya Extension B) & 𝌆 (Musical Symbol)",
+      "expected_safe_behavior": "Surrogate pairs preserved without string slicing corruption",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "�"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Unicode Plane 2 CJK Unified Ideographs Extension B.",
+      "payload_b64": "8KCut+mHjuWutiAoWW9zaGlub3lhIEV4dGVuc2lvbiBCKSAmIPCdjIYgKE11c2ljYWwgU3ltYm9sKQ=="
+    },
+    {
+      "id": "diacritic_1",
+      "category": "Unicode Normalization Forms",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "café (NFC: \\u00e9 vs NFD: e + \\u0301)",
+      "expected_safe_behavior": "Normalized via String.prototype.normalize('NFC') before database lookup",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "�"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Canonical decomposition vs composition equivalence.",
+      "payload_b64": "Y2Fmw6kgKE5GQzogXHUwMGU5IHZzIE5GRDogZSArIFx1MDMwMSk="
+    },
+    {
+      "id": "null_1",
+      "category": "Embedded Null Byte",
+      "target": "path",
+      "field_type_hint": "filename",
+      "payload": "image.png\u0000.exe",
+      "expected_safe_behavior": "Null byte stripped or string rejected; file extension check enforced",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "\u0000"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Null byte injection in string filenames.",
+      "payload_b64": "aW1hZ2UucG5nAC5leGU="
+    },
+    {
+      "id": "grapheme_1",
+      "category": "Extreme Grapheme Cluster",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "🏴󠁧󠁢󠁷󠁬󠁳󠁿 (Flag of Wales - 7 code points)",
+      "expected_safe_behavior": "Correct string length calculation using Intl.Segmenter",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "�"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Emoji flag sequence using regional indicator tags.",
+      "payload_b64": "8J+PtPOggafzoIGi86CBt/OggazzoIGz86CBvyAoRmxhZyBvZiBXYWxlcyAtIDcgY29kZSBwb2ludHMp"
+    }
+  ]
+}

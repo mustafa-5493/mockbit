@@ -1,0 +1,56 @@
+[
+  {
+    "endpoint": "/api/v1/public/fintech-billing/refunds",
+    "domain": "finance",
+    "semantic_tags": [
+      "financial",
+      "mutation",
+      "high_risk",
+      "requires_audit_log"
+    ],
+    "related_entities": [
+      "charge",
+      "invoice",
+      "ledger_entry"
+    ],
+    "starts_workflows": [
+      "wf_fintech_refund_reconciliation"
+    ]
+  },
+  {
+    "endpoint": "/api/v1/public/aws-cloud/iam-policies",
+    "domain": "cloud_security",
+    "semantic_tags": [
+      "security",
+      "access_control",
+      "high_risk",
+      "compliance_critical"
+    ],
+    "related_entities": [
+      "iam_role",
+      "s3_bucket",
+      "vpc_subnet"
+    ],
+    "starts_workflows": [
+      "wf_aws_sec_remediation"
+    ]
+  },
+  {
+    "endpoint": "/api/v1/public/salesforce-lead2cash/orders",
+    "domain": "sales_operations",
+    "semantic_tags": [
+      "revenue",
+      "order_processing",
+      "contract_bound"
+    ],
+    "related_entities": [
+      "opportunity",
+      "quote",
+      "contract",
+      "invoice"
+    ],
+    "starts_workflows": [
+      "wf_lead_to_cash"
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "behavior_id": "gdpr_erasure",
+  "name": "GDPR Right-to-be-Forgotten Data Erasure",
+  "domain": "compliance",
+  "trigger": "compliance.gdpr_request_submitted",
+  "steps": [
+    "user_db.anonymize_pii",
+    "analytics.purge_user_events",
+    "s3.scrub_backups",
+    "audit.record_erasure_certificate"
+  ],
+  "expected_world_state": "HEALTHY",
+  "required_invariants": [
+    "pii_fields_cleared == true",
+    "erasure_certificate_generated == true"
+  ],
+  "description": "Automated GDPR Article 17 Right to Erasure execution scrubbing PII across databases, analytics, and S3 cold storage."
+}

@@ -1,0 +1,18 @@
+{
+  "behavior_id": "subscription_renewal",
+  "name": "SaaS Subscription Auto-Renewal & Invoicing",
+  "domain": "billing",
+  "trigger": "subscription.renewal_due",
+  "steps": [
+    "payment_gateway.charge_card",
+    "invoice.mark_paid",
+    "entitlements.extend_access",
+    "email.send_receipt"
+  ],
+  "expected_world_state": "HEALTHY",
+  "required_invariants": [
+    "renewed_until > current_period_end",
+    "invoice_status == paid"
+  ],
+  "description": "Recurring SaaS subscription renewal lifecycle with payment processing and license entitlement extension."
+}

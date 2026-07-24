@@ -1,0 +1,112 @@
+{
+  "id": "healthcare-fhir",
+  "name": "Healthcare & EHR Network",
+  "tagline": "Patient Care Lifecycle, FHIR Interoperability & Claims",
+  "category": "Healthcare Infrastructure",
+  "description": "Simulates Epic Systems EHR patient admission, vitals tracking, lab results, doctor review, insurance prior authorization, and HIPAA audit logging.",
+  "systems": [
+    "Epic Systems EHR",
+    "FHIR Interoperability",
+    "Lab System",
+    "Insurance Claims",
+    "Pharmacy Dispenser",
+    "HIPAA Audit Logger"
+  ],
+  "entity_graph": [
+    "Patients",
+    "Appointments",
+    "Encounters",
+    "Vitals",
+    "Lab Tests",
+    "Prescriptions",
+    "Insurance Claims",
+    "HIPAA Audit Events"
+  ],
+  "event_cascade": [
+    "Patient Encounter Created (Epic Systems)",
+    "Vitals & Symptoms Recorded (FHIR)",
+    "Blood Test Requested & Lab Results Uploaded",
+    "Doctor Review & Electronic Prescription Issued",
+    "Insurance Prior Authorization Submitted",
+    "Medication Dispensed at Pharmacy",
+    "HIPAA Compliance Access Log Saved"
+  ],
+  "workflows": [],
+  "invariants": [],
+  "event_rules": [
+    {
+      "trigger": "epic.patient.admitted",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "fhir_observation",
+          "delta": {
+            "vitals": "120/80 mmHg",
+            "heart_rate": 72
+          }
+        },
+        {
+          "type": "emit",
+          "event": "lab.bloodtest.requested",
+          "delta": {
+            "lab_order_id": "LAB_7701"
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "lab.bloodtest.requested",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "pharmacy_prescription",
+          "delta": {
+            "rx_code": "RX_40129",
+            "status": "PENDING_PRIOR_AUTH"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "insurance.claim.submitted",
+          "delta": {
+            "claim_id": "CLM_88019"
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "Epic EHR",
+      "method": "POST",
+      "path": "/api/FHIR/R4/Patient",
+      "description": "Register FHIR patient record"
+    },
+    {
+      "system": "Lab System",
+      "method": "GET",
+      "path": "/api/FHIR/R4/Observation",
+      "description": "Query diagnostic lab results"
+    },
+    {
+      "system": "Insurance",
+      "method": "POST",
+      "path": "/v1/claims/prior-auth",
+      "description": "Submit prior authorization claim"
+    },
+    {
+      "system": "HIPAA Audit",
+      "method": "POST",
+      "path": "/v1/audit/logs",
+      "description": "Log compliance data access event"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 99.1,
+    "workflow_completion": 96,
+    "recovery_intelligence": 92.8,
+    "state_efficiency": 94.5,
+    "safety_score": 99.8
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\"healthcare-fhir\", branch=\"agent-hipaa-audit\")\nresult = arena.evaluate(agent)"
+}

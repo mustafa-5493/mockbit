@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   MOCKBIT DESIGN TOKENS
+   Strict zinc/neutral system. One accent role (crisp white),
+   one focus role (neutral border), syntax tints reserved for
+   code only. No rainbow gradients, no glow.
+============================================================ */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --mb-bg: #09090b;
+  --mb-bg-raised: #0c0c0e;
+  --mb-surface: #121215;
+  --mb-surface-hover: #18181c;
+  --mb-surface-active: #1c1c20;
+
+  /* Borders */
+  --mb-border: #27272a;
+  --mb-border-hover: #313135;
+  --mb-border-focus: #52525b;
+
+  /* Text */
+  --mb-text: #fafafa;
+  --mb-text-secondary: #a1a1aa;
+  --mb-text-tertiary: #71717a;
+  --mb-text-disabled: #45454b;
+
+  /* Accent — monochrome, used sparingly for emphasis only */
+  --mb-accent: #f4f4f5;
+  --mb-accent-muted: #d4d4d8;
+
+  /* Syntax tints — muted, restricted to code blocks */
+  --mb-syntax-key: #a5b4fc;
+  --mb-syntax-string: #d4d4d8;
+  --mb-syntax-bracket: #71717a;
+  --mb-syntax-number: #fca5a5;
+
+  /* Semantic — status only, never decorative */
+  --mb-success: #4ade80;
+  --mb-error: #f87171;
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+}
+
+* {
+  border-color: var(--mb-border);
+}
+
+html {
+  background: var(--mb-bg);
+}
+
+body {
+  background: var(--mb-bg);
+  color: var(--mb-text);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.011em;
+}
+
+/* Focus visibility — a11y floor, kept quiet */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--mb-bg), 0 0 0 3px var(--mb-border-focus);
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::selection {
+  background: var(--mb-border-focus);
+  color: var(--mb-text);
+}
+
+/* Thin, disciplined scrollbars — Linear/Vercel style */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mb-border);
+  border-radius: 8px;
+  border: 2px solid var(--mb-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mb-border-hover);
+}
+
+/* ============================================================
+   COMPONENT UTILITIES
+============================================================ */
+@layer components {
+  /* Base elevated surface — the one card treatment for the whole app */
+  .mb-panel {
+    background-color: var(--mb-surface);
+    border: 1px solid var(--mb-border);
+    border-radius: 10px;
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.03) inset;
+  }
+
+  .mb-panel-interactive {
+    @apply mb-panel transition-colors duration-120 ease-out;
+  }
+  .mb-panel-interactive:hover {
+    background-color: var(--mb-surface-hover);
+    border-color: var(--mb-border-hover);
+  }
+
+  /* Hairline divider — replaces heavy borders between sections */
+  .mb-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--mb-border) 15%,
+      var(--mb-border) 85%,
+      transparent
+    );
+  }
+
+  /* Primary button — solid, no gradient, no scale hover */
+  .mb-btn-primary {
+    background-color: var(--mb-accent);
+    color: #09090b;
+    border-radius: 7px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: background-color 120ms ease-out, opacity 120ms ease-out;
+  }
+  .mb-btn-primary:hover {
+    background-color: var(--mb-accent-muted);
+  }
+  .mb-btn-primary:active {
+    opacity: 0.85;
+  }
+
+  /* Secondary button — bordered, ghost surface */
+  .mb-btn-secondary {
+    background-color: var(--mb-surface);
+    border: 1px solid var(--mb-border);
+    color: var(--mb-text);
+    border-radius: 7px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: background-color 120ms ease-out, border-color 120ms ease-out;
+  }
+  .mb-btn-secondary:hover {
+    background-color: var(--mb-surface-hover);
+    border-color: var(--mb-border-hover);
+  }
+
+  /* Faint background grid texture for hero — 3% opacity, no blur/glow */
+  .mb-grid-bg {
+    background-image: var(--tw-gradient-mb-grid, none);
+    background-image: linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 75%);
+    mask-image: linear-gradient(to bottom, black, transparent 75%);
+  }
+
+  .mb-kbd {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--mb-text-tertiary);
+    background: var(--mb-bg-raised);
+    border: 1px solid var(--mb-border);
+    border-radius: 5px;
+    padding: 1px 5px;
+  }
+}

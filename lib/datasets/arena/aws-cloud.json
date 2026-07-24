@@ -1,0 +1,152 @@
+{
+  "id": "aws-cloud",
+  "name": "AWS Cloud Infrastructure",
+  "tagline": "AWS IAM Security, VPC Subnets, S3 Buckets & Remediation",
+  "category": "Cloud Infrastructure",
+  "description": "Simulates AWS IAM policy enforcement, VPC Subnet isolation, EC2 Instances, S3 Bucket public access policies, CloudWatch Alarms, and Terraform automated remediation.",
+  "systems": [
+    "AWS IAM",
+    "AWS VPC",
+    "AWS EC2",
+    "AWS S3",
+    "AWS CloudWatch",
+    "Terraform Vault",
+    "PagerDuty Alert"
+  ],
+  "entity_graph": [
+    "IAM Policies",
+    "VPC Subnets",
+    "EC2 Instances",
+    "S3 Buckets",
+    "CloudWatch Alarms",
+    "Terraform Runs",
+    "Incident Alerts"
+  ],
+  "event_cascade": [
+    "IAM Policy Modified (Public Access Allowed on S3 Bucket)",
+    "AWS CloudWatch Security Metric Alarm Triggered",
+    "PagerDuty HIGH P1 Alert Dispatched to Security Ops",
+    "Agent Inspects IAM Policy & Initiates Remediation",
+    "Terraform Security Run Executed (Public Access Blocked)",
+    "CloudWatch Metric Alarm Normalized & Incident Closed"
+  ],
+  "workflows": [
+    {
+      "id": "wf_aws_sec_remediation",
+      "name": "AWS Cloud Security Automated Remediation Workflow",
+      "start_event": "aws.iam.policy_violation",
+      "required_events": [
+        "cloudwatch.alarm.triggered",
+        "pagerduty.alert.dispatched"
+      ],
+      "success_event": "terraform.remediation.applied",
+      "failure_event": "arena.invariant.failed"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "inv_s3_public",
+      "description": "Public S3 bucket access requires explicit security policy override",
+      "check_field": "is_public",
+      "operator": "equals",
+      "check_value": false,
+      "on_fail_emit": "arena.invariant.failed"
+    }
+  ],
+  "event_rules": [
+    {
+      "trigger": "aws.iam.policy_violation",
+      "actions": [
+        {
+          "type": "update",
+          "resource": "s3_bucket",
+          "delta": {
+            "bucket_name": "prod-customer-data",
+            "is_public": true
+          }
+        },
+        {
+          "type": "emit",
+          "event": "cloudwatch.alarm.triggered",
+          "delta": {
+            "alarm_id": "ALM_9901",
+            "severity": "CRITICAL"
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "cloudwatch.alarm.triggered",
+      "actions": [
+        {
+          "type": "create",
+          "resource": "pagerduty_alert",
+          "delta": {
+            "alert_id": "ALT_4019",
+            "title": "S3 Public Bucket Violation Detected"
+          }
+        },
+        {
+          "type": "emit",
+          "event": "pagerduty.alert.dispatched",
+          "delta": {
+            "alert_sent": true
+          }
+        }
+      ]
+    },
+    {
+      "trigger": "pagerduty.alert.dispatched",
+      "actions": [
+        {
+          "type": "update",
+          "resource": "s3_bucket",
+          "delta": {
+            "is_public": false
+          }
+        },
+        {
+          "type": "emit",
+          "event": "terraform.remediation.applied",
+          "delta": {
+            "remediation_complete": true
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "system": "AWS IAM",
+      "method": "POST",
+      "path": "/v1/iam/policies/evaluate",
+      "description": "Evaluate IAM policy statement rules"
+    },
+    {
+      "system": "AWS S3",
+      "method": "PUT",
+      "path": "/v1/s3/buckets/:id/policy",
+      "description": "Update S3 bucket public access block policy"
+    },
+    {
+      "system": "CloudWatch",
+      "method": "GET",
+      "path": "/v1/cloudwatch/alarms",
+      "description": "Query active security metric alarms"
+    },
+    {
+      "system": "Terraform",
+      "method": "POST",
+      "path": "/v1/runs/apply",
+      "description": "Execute Terraform infrastructure remediation"
+    }
+  ],
+  "agent_index_rubric": {
+    "tool_correctness": 98.8,
+    "workflow_completion": 95.1,
+    "recovery_intelligence": 93.4,
+    "state_efficiency": 91.2,
+    "safety_score": 99.5
+  },
+  "sample_python_sdk": "from mockbit_arena import Arena\n\narena = Arena()\nworld = arena.load_world(\"aws-cloud\", branch=\"agent-aws-sec-01\")\nresult = arena.evaluate(agent)"
+}
