@@ -1,6 +1,6 @@
 <div align="center">
 
-  <h1>⚡ mockbit</h1>
+  <h1>mockbit</h1>
   <p><strong>Instant, Local-First Mock API Generator for Modern Engineering Teams</strong></p>
 
   <p>
@@ -19,7 +19,7 @@
 
 ---
 
-## 💡 What is Mockbit?
+## What is Mockbit?
 
 **Mockbit** is an open-source, ultra-fast mock API service designed for frontend developers, mobile engineers, QA teams, and technical interview demonstrations. 
 
