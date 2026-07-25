@@ -154,12 +154,12 @@ curl -X DELETE "http://localhost:3000/api/v1/demo/orders/ord_123"
 
 ## 🛠️ Technology Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router & Dynamic Route Handlers)
+- **Framework**: [Next.js 15](https://nextjs.org/) 
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Lucide Icons](https://lucide.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) &
 - **Data Engine**: [@faker-js/faker](https://fakerjs.dev/)
-- **Database & Auth**: [Supabase](https://supabase.com/) (Postgres + Row Level Security)
-- **Deployment**: [Vercel](https://vercel.com/) (Serverless & Free-Tier Compliant)
+- **Database & Auth**: [Supabase](https://supabase.com/) 
+- **Deployment**: [Vercel](https://vercel.com/) 
 
 ---
 
