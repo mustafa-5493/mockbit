@@ -226,7 +226,7 @@ export default function PublicDatasetsHubPage() {
         <div className="space-y-3 border-b border-mb-border pb-8">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-mb-surface border border-mb-border text-2xs text-mb-text-secondary font-mono">
             <Sparkles className="w-3 h-3 text-mb-text-tertiary" />
-            <span>Datasets · Time-Travel Journeys · Security Harnesses · Mockbit Arena™</span>
+            <span>Datasets · Time-Travel Journeys · Security Harnesses · Mockbit Arena</span>
           </div>
 
           <h1 className="text-3xl font-semibold tracking-tight text-mb-text">
