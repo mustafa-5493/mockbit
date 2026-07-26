@@ -63,7 +63,7 @@ export default function PublicDatasetsHubPage() {
   const [activeResilienceId, setActiveResilienceId] = useState<string>("security");
   const [activeVectorId, setActiveVectorId] = useState<string>("sqli_1");
 
-  // Mockbit Arena™ State
+  // Mockbit Arena State
   const [activeArenaWorldId, setActiveArenaWorldId] = useState<string>("fintech-billing");
   const [cascadeResult, setCascadeResult] = useState<CascadeExecutionResult | null>(null);
 
@@ -234,7 +234,7 @@ export default function PublicDatasetsHubPage() {
           </h1>
 
           <p className="text-sm text-mb-text-secondary max-w-2xl leading-relaxed">
-            Access domain REST endpoints, scrub through scenario version steps, test input resilience, or run autonomous AI agents in Mockbit Arena™ — the world's safest synthetic internet for software agents.
+            Access domain REST endpoints, scrub through scenario version steps, test input resilience, or run autonomous AI agents in Mockbit Arena — the world's safest synthetic internet for software agents.
           </p>
 
           {/* Section Navigation Tabs */}
@@ -284,7 +284,7 @@ export default function PublicDatasetsHubPage() {
               }`}
             >
               <Bot className="w-4 h-4 text-mb-text-tertiary" />
-              <span>Mockbit Arena™ (AI Agent Substrate)</span>
+              <span>Mockbit Arena (AI Agent Substrate)</span>
             </button>
 
             <button
@@ -786,7 +786,7 @@ export default function PublicDatasetsHubPage() {
           </div>
         )}
 
-        {/* SECTION 4: MOCKBIT ARENA™ (AI AGENT SUBSTRATE) */}
+        {/* SECTION 4: MOCKBIT ARENA (AI AGENT SUBSTRATE) */}
         {activeSection === "arena" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Arena World Selector Cards (5 Cols) */}
