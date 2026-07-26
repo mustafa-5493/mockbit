@@ -234,7 +234,7 @@ export default function PublicDatasetsHubPage() {
           </h1>
 
           <p className="text-sm text-mb-text-secondary max-w-2xl leading-relaxed">
-            Access domain REST endpoints, scrub through scenario version steps, test input resilience, or run autonomous AI agents in Mockbit Arena — the world's safest synthetic internet for software agents.
+            Access domain REST endpoints, scrub through scenario version steps, test input resilience, or run autonomous AI agents in Mockbit Arena , the world's safest synthetic internet for software agents.
           </p>
 
           {/* Section Navigation Tabs */}
