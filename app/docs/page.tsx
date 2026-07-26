@@ -2023,7 +2023,7 @@ Auto-Mock Rule Generator: 1-Click Convert`,
   {
     id: "arena-chaos",
     category: "Resilience & Chaos",
-    title: "Mockbit Arena™ Chaos & Latency Fault Injection Runtime",
+    title: "Mockbit Arena Chaos & Latency Fault Injection Runtime",
     description:
       "Simulate high latency jitter, random network disconnects, HTTP status code splits (e.g. 95% 200 / 5% 500), and rate-limit faults (429 Too Many Requests) to validate client retry resilience.",
     syntax: `X-Mockbit-Execution-Tier: chaos_fault
