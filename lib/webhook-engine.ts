@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { isSafeExternalUrl } from "@/lib/url-safety";
 
 export interface WebhookPayload {
   event: string;
@@ -18,7 +19,7 @@ export function dispatchWebhook(
   data: any,
   endpointId?: string
 ): void {
-  if (!webhookUrl || !webhookUrl.startsWith("http")) return;
+  if (!webhookUrl || !isSafeExternalUrl(webhookUrl).safe) return;
 
   const payload: WebhookPayload = {
     event: `mockbit.mutation.${action.toLowerCase()}`,

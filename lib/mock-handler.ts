@@ -25,6 +25,7 @@ import {
   rewindToVersion,
 } from "@/lib/store-engine";
 import { dispatchWebhook } from "@/lib/webhook-engine";
+import { isSafeExternalUrl } from "@/lib/url-safety";
 
 export const runtime = "nodejs";
 
@@ -250,6 +251,14 @@ export async function handleMockRequest(
 
         // Handle Dual-Mode Proxy / Callout Execution (Beeceptor Neutralizer Phase)
         if (rule.calloutUrl) {
+          const urlCheck = isSafeExternalUrl(rule.calloutUrl);
+          if (!urlCheck.safe) {
+            return NextResponse.json(
+              { error: "SSRF Protection Blocked Request", reason: urlCheck.reason, targetUrl: rule.calloutUrl },
+              { status: 400, headers: getRuleIdHeader(ruleId) }
+            );
+          }
+
           const method = (rule.calloutMethod || "POST").toUpperCase();
 
           let calloutBodyText = rule.calloutPayload;

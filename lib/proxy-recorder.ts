@@ -1,4 +1,5 @@
 import { FieldDefinition } from "@/lib/mock-generator";
+import { isSafeExternalUrl } from "@/lib/url-safety";
 
 export interface RecordedProxyTraffic {
   targetUrl: string;
@@ -59,6 +60,11 @@ function lowerHeaderMatch(str: string, terms: string[]): boolean {
  * Execute HTTP proxy request to target endpoint and record response schema
  */
 export async function recordProxyRequest(targetUrl: string, method: string = "GET", headers?: Record<string, string>, body?: any): Promise<RecordedProxyTraffic> {
+  const urlCheck = isSafeExternalUrl(targetUrl);
+  if (!urlCheck.safe) {
+    throw new Error(`SSRF Blocked: ${urlCheck.reason}`);
+  }
+
   const reqHeaders: Record<string, string> = {
     "accept": "application/json",
     ...headers,
