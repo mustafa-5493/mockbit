@@ -78,6 +78,8 @@ import {
   Radio,
   Settings,
   X,
+  Lock,
+  Zap,
 } from "lucide-react";
 
 const FAKER_TYPE_OPTIONS: { label: string; value: FieldDefinition["type"] }[] = [
@@ -182,6 +184,13 @@ function NewEndpointForm() {
   // Navigation & Studio UX State
   const [studioTab, setStudioTab] = useState<"schema" | "behavior" | "relations">("schema");
   const [showPreviewPanel, setShowPreviewPanel] = useState<boolean>(true);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null);
+    }).catch(() => {});
+  }, []);
 
   // Form Metadata State
   const [name, setName] = useState("Orders API");
@@ -991,9 +1000,22 @@ function NewEndpointForm() {
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h1 className="font-semibold text-sm text-mb-text flex items-center gap-2">
-              Endpoint Studio
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-semibold text-sm text-mb-text flex items-center gap-2">
+                Endpoint Studio
+              </h1>
+              {user ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-2xs font-mono font-medium" title="Endpoints created will be isolated to your account">
+                  <Lock className="w-3 h-3" />
+                  Private Workspace
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-2xs font-mono font-medium" title="Public demo mode — anyone with the URL can test. Sign in to lock.">
+                  <Zap className="w-3 h-3 text-amber-400" />
+                  Public Demo Mode
+                </span>
+              )}
+            </div>
             <p className="text-2xs text-mb-text-tertiary">Design mock API schema & preview live response output</p>
           </div>
         </div>
@@ -1034,6 +1056,17 @@ function NewEndpointForm() {
             <LinkIcon className="w-3.5 h-3.5 mr-1.5 text-mb-text-tertiary" />
             <span className="hidden sm:inline">Share</span>
           </button>
+
+          {!user && (
+            <Link
+              href="/login?redirect=/dashboard/endpoints/new"
+              className="inline-flex items-center gap-1.5 px-3 h-8 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-medium transition-colors"
+              title="Sign in to lock endpoints to your account"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Sign In to Lock</span>
+            </Link>
+          )}
 
           <button
             onClick={() => setShowPreviewPanel(!showPreviewPanel)}

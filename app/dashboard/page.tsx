@@ -25,10 +25,14 @@ import {
   GitBranch,
   Sliders,
   Camera,
+  Lock,
+  Zap,
+  Globe,
 } from "lucide-react";
 
 interface Endpoint {
   id: string;
+  user_id?: string;
   name: string;
   slug: string;
   response_type: "object" | "array";
@@ -49,6 +53,7 @@ export default function DashboardPage() {
   const [activeBranch, setActiveBranch] = useState("main");
   const [activeScenario, setActiveScenario] = useState("default");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Copy URL State
@@ -83,6 +88,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     loadEndpoints();
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null);
+    }).catch(() => {});
   }, []);
 
   const loadEndpoints = async () => {
@@ -358,9 +366,30 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-mb-border pb-6">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-mb-text">Endpoints Dashboard</h1>
-            <p className="text-sm text-mb-text-secondary mt-1">
-              Manage stateful REST mock routes and inspect real-time execution logs.
-            </p>
+            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-mono bg-mb-surface border-mb-border">
+              {user ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-emerald-400 font-medium flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-emerald-400" />
+                    Private Workspace
+                  </span>
+                  <span className="text-mb-text-tertiary">({user.email})</span>
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-amber-400 font-medium flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-amber-400" />
+                    Public Demo Prototyping Mode
+                  </span>
+                  <span className="text-mb-text-tertiary hidden md:inline">| Zero login required</span>
+                  <Link href="/login" className="ml-1 text-amber-300 underline font-sans hover:text-amber-200">
+                    Sign In to Lock 🔒
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -458,6 +487,17 @@ export default function DashboardPage() {
                         <span className="text-xs text-mb-text-tertiary font-mono">/api/v1/demo/{ep.slug}</span>
                       </div>
                       <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                        {ep.user_id ? (
+                          <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-2xs font-mono flex items-center gap-1" title="Private user-scoped endpoint">
+                            <Lock className="w-3 h-3" />
+                            Private
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-2xs font-mono flex items-center gap-1" title="Public demo endpoint">
+                            <Zap className="w-3 h-3" />
+                            Demo Mode
+                          </span>
+                        )}
                         <span className="px-2 py-0.5 rounded bg-mb-bg-raised text-mb-text-secondary border border-mb-border text-2xs font-mono">
                           {ep.status_code || 200} OK
                         </span>
