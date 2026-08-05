@@ -264,6 +264,13 @@ export default function DashboardPage() {
     a.download = `${endpoint.slug}-openapi.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast(`OpenAPI 3.0 spec downloaded for /${endpoint.slug}`);
+  };
+
+  const handleCopyOpenAPI = (endpoint: Endpoint) => {
+    const jsonStr = exportToOpenAPI(endpoint);
+    navigator.clipboard.writeText(jsonStr);
+    showToast(`OpenAPI 3.0 spec copied to clipboard!`);
   };
 
   const handleDownloadPostman = (endpoint: Endpoint) => {
@@ -275,6 +282,13 @@ export default function DashboardPage() {
     a.download = `${endpoint.slug}-postman.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast(`Postman v2.1 collection downloaded for /${endpoint.slug}`);
+  };
+
+  const handleCopyPostman = (endpoint: Endpoint) => {
+    const jsonStr = exportToPostman(endpoint);
+    navigator.clipboard.writeText(jsonStr);
+    showToast(`Postman v2.1 collection copied to clipboard!`);
   };
 
   const confirmDelete = async () => {
@@ -575,24 +589,30 @@ export default function DashboardPage() {
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5 border-l border-mb-border pl-2">
                       <button
                         onClick={() => handleDownloadOpenAPI(ep)}
-                        className="p-1 rounded text-mb-text-tertiary hover:text-mb-text hover:bg-mb-surface-hover transition-colors text-xs"
-                        title="Export OpenAPI Spec"
+                        onContextMenu={(e) => { e.preventDefault(); handleCopyOpenAPI(ep); }}
+                        className="px-2 py-1 rounded bg-mb-surface hover:bg-mb-surface-hover text-mb-text-secondary hover:text-mb-text transition-colors text-2xs font-mono border border-mb-border flex items-center gap-1"
+                        title="Click to Download OpenAPI 3.0 Spec (Right-click to Copy JSON)"
                       >
-                        <FileCode className="w-3.5 h-3.5" />
+                        <FileCode className="w-3 h-3 text-mb-text-tertiary" />
+                        <span>OpenAPI</span>
                       </button>
+
                       <button
                         onClick={() => handleDownloadPostman(ep)}
-                        className="p-1 rounded text-mb-text-tertiary hover:text-mb-text hover:bg-mb-surface-hover transition-colors text-xs"
-                        title="Export Postman Collection"
+                        onContextMenu={(e) => { e.preventDefault(); handleCopyPostman(ep); }}
+                        className="px-2 py-1 rounded bg-mb-surface hover:bg-mb-surface-hover text-mb-text-secondary hover:text-mb-text transition-colors text-2xs font-mono border border-mb-border flex items-center gap-1"
+                        title="Click to Download Postman v2.1 Collection (Right-click to Copy JSON)"
                       >
-                        <Download className="w-3.5 h-3.5" />
+                        <Download className="w-3 h-3 text-mb-text-tertiary" />
+                        <span>Postman</span>
                       </button>
+
                       <button
                         onClick={() => setDeleteTarget(ep)}
-                        className="p-1 rounded text-mb-text-tertiary hover:text-mb-error hover:bg-mb-surface-hover transition-colors"
+                        className="p-1 rounded text-mb-text-tertiary hover:text-mb-error hover:bg-mb-surface-hover transition-colors ml-1"
                         title="Delete Endpoint"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
