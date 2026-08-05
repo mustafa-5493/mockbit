@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -24,6 +24,7 @@ import {
   Clock,
   Shuffle,
   Tag,
+  Radio,
 } from "lucide-react";
 
 function MarkIcon() {
@@ -2054,6 +2055,221 @@ Payload Template: { "event": "order_created", "id": "{{body 'id'}}" }`,
   },
 ];
 
+function LiveProtocolPlayground() {
+  const [protocolTab, setProtocolTab] = useState<"graphql" | "sse" | "ws">("graphql");
+  
+  // GraphQL State
+  const [gqlQuery, setGqlQuery] = useState<string>("query GetUsers {\n  users {\n    id\n    name\n    email\n    status\n  }\n}");
+  const [gqlResponse, setGqlResponse] = useState<any>(null);
+  const [gqlLoading, setGqlLoading] = useState<boolean>(false);
+
+  // SSE State
+  const [sseActive, setSseActive] = useState<boolean>(false);
+  const [sseEvents, setSseEvents] = useState<string[]>([]);
+  const sseRef = useRef<EventSource | null>(null);
+
+  // WebSocket Simulation State
+  const [wsActive, setWsActive] = useState<boolean>(false);
+  const [wsEvents, setWsEvents] = useState<string[]>([]);
+  const wsRef = useRef<EventSource | null>(null);
+
+  const handleRunGraphQL = async () => {
+    setGqlLoading(true);
+    try {
+      const res = await fetch("/api/v1/graphql", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: gqlQuery }),
+      });
+      const data = await res.json();
+      setGqlResponse(data);
+    } catch (err: any) {
+      setGqlResponse({ error: err.message || "Failed to execute GraphQL query" });
+    } finally {
+      setGqlLoading(false);
+    }
+  };
+
+  const toggleSSE = () => {
+    if (sseActive) {
+      sseRef.current?.close();
+      setSseActive(false);
+      return;
+    }
+
+    setSseEvents([]);
+    setSseActive(true);
+    const es = new EventSource("/api/v1/stream/general");
+    sseRef.current = es;
+
+    es.onmessage = (event) => {
+      setSseEvents((prev) => [event.data, ...prev.slice(0, 15)]);
+    };
+
+    es.onerror = () => {
+      es.close();
+      setSseActive(false);
+    };
+  };
+
+  const toggleWS = () => {
+    if (wsActive) {
+      wsRef.current?.close();
+      setWsActive(false);
+      return;
+    }
+
+    setWsEvents([]);
+    setWsActive(true);
+    const es = new EventSource("/api/v1/ws");
+    wsRef.current = es;
+
+    es.onmessage = (event) => {
+      setWsEvents((prev) => [event.data, ...prev.slice(0, 15)]);
+    };
+
+    es.onerror = () => {
+      es.close();
+      setWsActive(false);
+    };
+  };
+
+  return (
+    <div className="mb-panel p-5 bg-mb-surface border border-mb-border rounded-xl space-y-4 shadow-md">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-mb-border pb-3">
+        <div className="flex items-center gap-2">
+          <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+          <h3 className="font-semibold text-sm text-mb-text">Live Multi-Protocol Interactive Playground</h3>
+        </div>
+        
+        {/* Protocol Switcher Tabs */}
+        <div className="flex items-center gap-1 bg-mb-bg-raised border border-mb-border p-1 rounded-lg">
+          <button
+            onClick={() => setProtocolTab("graphql")}
+            className={`px-2.5 py-1 rounded text-2xs font-mono font-medium transition-colors ${
+              protocolTab === "graphql" ? "bg-mb-surface text-mb-text border border-mb-border shadow-xs" : "text-mb-text-tertiary hover:text-mb-text"
+            }`}
+          >
+            GraphQL POST
+          </button>
+          <button
+            onClick={() => setProtocolTab("sse")}
+            className={`px-2.5 py-1 rounded text-2xs font-mono font-medium transition-colors ${
+              protocolTab === "sse" ? "bg-mb-surface text-mb-text border border-mb-border shadow-xs" : "text-mb-text-tertiary hover:text-mb-text"
+            }`}
+          >
+            SSE Stream
+          </button>
+          <button
+            onClick={() => setProtocolTab("ws")}
+            className={`px-2.5 py-1 rounded text-2xs font-mono font-medium transition-colors ${
+              protocolTab === "ws" ? "bg-mb-surface text-mb-text border border-mb-border shadow-xs" : "text-mb-text-tertiary hover:text-mb-text"
+            }`}
+          >
+            WebSocket Sim
+          </button>
+        </div>
+      </div>
+
+      {/* Tab 1: GraphQL */}
+      {protocolTab === "graphql" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-2xs font-mono text-mb-text-tertiary uppercase tracking-wider">GraphQL Query Request</label>
+              <button
+                onClick={handleRunGraphQL}
+                disabled={gqlLoading}
+                className="mb-btn-primary inline-flex h-7 items-center px-3 text-2xs font-mono"
+              >
+                {gqlLoading ? "Executing..." : "Execute Query 🚀"}
+              </button>
+            </div>
+            <textarea
+              value={gqlQuery}
+              onChange={(e) => setGqlQuery(e.target.value)}
+              className="w-full h-44 bg-mb-bg-raised border border-mb-border rounded-lg p-3 font-mono text-xs text-mb-text focus:outline-none focus:border-mb-accent resize-none"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-2xs font-mono text-mb-text-tertiary uppercase tracking-wider block">Live Response Body (POST /api/v1/graphql)</label>
+            <pre className="h-44 bg-mb-bg-raised border border-mb-border rounded-lg p-3 font-mono text-2xs text-emerald-400 overflow-auto leading-relaxed">
+              {gqlResponse ? JSON.stringify(gqlResponse, null, 2) : "// Click 'Execute Query' to fetch mock GraphQL payload"}
+            </pre>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 2: SSE Stream */}
+      {protocolTab === "sse" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-2xs font-mono text-mb-text-tertiary block">Endpoint: GET /api/v1/stream/general</span>
+              <span className="text-xs text-mb-text-secondary">Real-time Server-Sent Events stream emitting mock transaction ticks</span>
+            </div>
+            <button
+              onClick={toggleSSE}
+              className={`inline-flex h-8 items-center px-3 text-xs font-mono font-medium rounded-md transition-colors ${
+                sseActive ? "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30" : "mb-btn-primary"
+              }`}
+            >
+              {sseActive ? "Stop SSE Stream ⏹" : "Start SSE Stream ▶"}
+            </button>
+          </div>
+
+          <div className="bg-mb-bg-raised border border-mb-border rounded-lg p-3 h-48 overflow-y-auto font-mono text-2xs space-y-1.5">
+            {sseEvents.length === 0 ? (
+              <span className="text-mb-text-tertiary">// Click 'Start SSE Stream' to initiate real-time EventSource connection</span>
+            ) : (
+              sseEvents.map((evt, idx) => (
+                <div key={idx} className="text-emerald-400 border-b border-mb-border/40 pb-1">
+                  <span className="text-mb-text-tertiary mr-2">[{new Date().toLocaleTimeString()}]</span>
+                  <span>{evt}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 3: WebSocket Sim */}
+      {protocolTab === "ws" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-2xs font-mono text-mb-text-tertiary block">Endpoint: GET /api/v1/ws</span>
+              <span className="text-xs text-mb-text-secondary">Simulated WebSocket Market Ticker Feed (100 Hz BTC-USD ticks)</span>
+            </div>
+            <button
+              onClick={toggleWS}
+              className={`inline-flex h-8 items-center px-3 text-xs font-mono font-medium rounded-md transition-colors ${
+                wsActive ? "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30" : "mb-btn-primary"
+              }`}
+            >
+              {wsActive ? "Disconnect Socket ⏹" : "Connect Socket ▶"}
+            </button>
+          </div>
+
+          <div className="bg-mb-bg-raised border border-mb-border rounded-lg p-3 h-48 overflow-y-auto font-mono text-2xs space-y-1.5">
+            {wsEvents.length === 0 ? (
+              <span className="text-mb-text-tertiary">// Click 'Connect Socket' to open simulated WebSocket ticker stream</span>
+            ) : (
+              wsEvents.map((evt, idx) => (
+                <div key={idx} className="text-cyan-300 border-b border-mb-border/40 pb-1">
+                  <span className="text-mb-text-tertiary mr-2">[{new Date().toLocaleTimeString()}]</span>
+                  <span>{evt}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ProductionDocsPage() {
   const [activeId, setActiveId] = useState<string>("overview");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -2145,6 +2361,9 @@ export default function ProductionDocsPage() {
 
         {/* Right Content Area */}
         <div className="flex-1 space-y-6 min-w-0">
+          {/* Live Protocol Playground */}
+          <LiveProtocolPlayground />
+
           {/* Active Section Header Card */}
           <div className="bg-mb-surface border border-mb-border rounded-2xl p-6 relative overflow-hidden shadow-lg">
             <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-mb-accent/5 rounded-full blur-3xl pointer-events-none" />
