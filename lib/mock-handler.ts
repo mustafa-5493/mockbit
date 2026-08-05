@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import {
   generateMockResponse,
@@ -440,7 +440,7 @@ export async function handleMockRequest(
 
     // Non-blocking request logging
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
-    Promise.resolve().then(async () => {
+    const logTask = async () => {
       try {
         await supabaseAdmin.from("request_logs").insert({
           endpoint_id: endpoint.id,
@@ -452,7 +452,13 @@ export async function handleMockRequest(
       } catch {
         // Silently swallow log insert errors if DB is offline
       }
-    });
+    };
+
+    try {
+      after(logTask);
+    } catch {
+      Promise.resolve().then(logTask);
+    }
 
     return handleStatefulRequest({
       user,

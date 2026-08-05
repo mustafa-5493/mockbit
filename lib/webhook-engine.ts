@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { after } from "next/server";
 import { isSafeExternalUrl } from "@/lib/url-safety";
 
 export interface WebhookPayload {
@@ -11,6 +12,8 @@ export interface WebhookPayload {
 
 /**
  * Non-blocking outgoing HTTP Webhook dispatcher
+ * Uses Next.js 15 after() when running inside HTTP request contexts on serverless platforms,
+ * falling back to Promise.resolve().then(...) otherwise.
  */
 export function dispatchWebhook(
   webhookUrl: string,
@@ -42,8 +45,7 @@ export function dispatchWebhook(
     headers["X-Mockbit-Signature"] = `sha256=${signature}`;
   }
 
-  // Non-blocking background dispatch
-  Promise.resolve().then(async () => {
+  const runDispatch = async () => {
     try {
       await fetch(webhookUrl, {
         method: "POST",
@@ -53,5 +55,11 @@ export function dispatchWebhook(
     } catch {
       // Silently swallow webhook dispatch failures to prevent blocking core API response
     }
-  });
+  };
+
+  try {
+    after(runDispatch);
+  } catch {
+    Promise.resolve().then(runDispatch);
+  }
 }
